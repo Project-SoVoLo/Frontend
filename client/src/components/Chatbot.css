@@ -1,0 +1,17 @@
+.chatbot-container {
+  width: 100vw;
+  height: calc(100vh - 70px - 60px);
+  margin: 0;
+  padding: 0;
+  background: #f8f4e8;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex: 1;
+  padding: 24px 0;
+  overflow-y: auto;
+}
