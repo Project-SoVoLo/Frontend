@@ -1,0 +1,53 @@
+/* src/components/Navbar/NavbarAdmin.css */
+
+.nav_bg {
+  background-image: url("../../assets/nav_bg.png"); /* 백업용 */
+  width: 100%;
+  height: 80px;
+  background-size: cover;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1280px;
+  height: auto;
+  margin: auto;
+}
+
+.logoArea {
+  width: 20%;
+  min-width: 150px;
+}
+
+.logoArea img {
+  width: 150px;
+  height: auto;
+  margin-top: 5px;
+}
+
+.nav {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  line-height: 80px;
+  width: 80%;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.nav > li {
+  position: relative;
+  margin-left: 65px;
+  list-style: none;
+}
+
+.nav a:hover {
+  color: #000000;
+  text-decoration: underline;
+}

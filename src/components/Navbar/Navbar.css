@@ -1,0 +1,104 @@
+/* src/components/Navbar/Navbar.css */
+
+.nav_bg {
+  width: 100%;
+  height: 80px;
+  background-size: cover;
+}
+
+.header {
+  display: flex;
+  width: 1280px;
+  height: 80px;
+  margin: auto;
+  position: relative;
+}
+
+.logoArea {
+  width: 300px;
+  height: 40px;
+}
+
+.logoArea img {
+  width: 150px;
+  height: auto;
+  margin-top: 5px;
+}
+
+.nav {
+  display: flex;
+  justify-content: flex-end;
+  line-height: 80px;
+  width: calc(1280px - 300px);
+  margin-right: -80px;
+}
+
+.nav a {
+  color: black;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.nav > li {
+  position: relative;
+  margin-left: 100px;
+  list-style: none;
+}
+
+.nav > .login {
+  margin-left: 84px;
+  margin-right: 0;
+}
+
+.nav > .register {
+  margin-left: 0;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(251, 247, 235, 1);
+  padding: 20px 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  justify-content: center;
+}
+
+.nav_bg:hover + .dropdown,
+.dropdown:hover {
+  display: flex;
+}
+
+.dropdown-content {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0;
+  padding-left: 240px;
+}
+
+.dropdown-section {
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dropdown-section button {
+  background-color: #FFD85C;
+  border: 1px solid #000;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 110px;
+}
+
+.dropdown-section button:hover {
+  background-color: #FFCC3C;
+}
