@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="myPage.css" />
+  <script defer src="myPage2.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <ul>
+        <li data-tab="counseling" class="active">상담내역</li>
+        <li data-tab="selftest">자가진단내역</li>
+        <li data-tab="emotion">호전상태</li>
+        <li data-tab="editprofile">개인정보수정</li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div id="counseling" class="tab-content active"></div>
+      <div id="selftest" class="tab-content"></div>
+      <div id="emotion" class="tab-content"></div>
+      <div id="editprofile" class="tab-content"></div>
+    </main>
+  </div>
+</body>
+</html>
