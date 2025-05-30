@@ -4,7 +4,7 @@ body {
   padding: 0;
 }
 
-/* 네비게이션 전체 배경 */
+
 .nav-bg {
   width: 100%;
   background: #fdf6e3;
@@ -12,7 +12,7 @@ body {
   border-bottom: 1.5px solid #f4e7c0;
 }
 
-/* 네비게이션 내부 컨테이너 */
+
 .navbar-container {
   display: flex;
   align-items: center;
@@ -22,9 +22,9 @@ body {
   position: relative;
 }
 
-/* 로고 영역 */
+
 .logo-area {
-  width: 160px; /* 로고 이미지+좌우 여백(좌10+우30+이미지120) */
+  width: 160px; 
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -33,10 +33,10 @@ body {
 .logo-area img {
   width: 120px;
   margin-left: 10px;
-  margin-right: 30px; /* 오른쪽 여백 */
+  margin-right: 30px; 
 }
 
-/* 메뉴 중앙 래퍼 */
+
 .menu-center-wrapper {
   flex: 1;
   display: flex;
@@ -45,7 +45,7 @@ body {
   position: relative;
 }
 
-/* 상단 메뉴: grid로 배치 */
+
 .nav-menu {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -78,11 +78,11 @@ body {
   color: #ffb300;
 }
 
-/* 드롭다운 전체 배경 (좌우 여백 없이) */
+
 .dropdown-bg {
   position: fixed;
   left: 0;
-  top: 80px; /* 메뉴바 바로 아래 */
+  top: 80px; 
   width: 100vw;
   background: #fff7df;
   z-index: 1000;
@@ -92,13 +92,13 @@ body {
   flex-direction: row;
 }
 
-/* 로고 영역만큼 왼쪽에 빈 공간 */
+
 .dropdown-placeholder {
-  width: 380px; /* logo-area와 동일하게! */
+  width: 380px; 
   flex-shrink: 0;
 }
 
-/* 드롭다운 메뉴: 상단 메뉴와 동일한 grid 구조 */
+
 .dropdown-menu {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -108,7 +108,7 @@ body {
   gap: 0 0;
 }
 
-/* 각 드롭다운 섹션 */
+
 .dropdown-section {
   display: flex;
   flex-direction: column;
@@ -117,7 +117,7 @@ body {
   min-width: 0;
 }
 
-/* 드롭다운 버튼 스타일 */
+
 .dropdown-btn {
   background: #ffd85c;
   border: 1.5px solid #bfa53a;
@@ -140,7 +140,7 @@ body {
   color: #000;
 }
 
-/* 반응형(옵션) */
+
 @media (max-width: 1280px) {
   .navbar-container {
     width: 100vw;

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-import logoImg from "../Images/logo.png"; // 실제 경로에 맞게 조정
+import logoImg from "../Images/logo.png"; 
 
 function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // 상단 메뉴명
+
   const menuItems = [
     "상담",
     "자가진단",
@@ -16,7 +16,7 @@ function Navbar() {
     "로그인",
   ];
 
-  // 각 상단 메뉴별 드롭다운 버튼 (없으면 빈 배열)
+
   const dropdownSections = [
     [
       { text: "채팅 상담", to: "/chat" },
@@ -41,7 +41,7 @@ function Navbar() {
       { text: "자가진단 내역 확인", to: "/questionnaire" },
       { text: "호전상태", to: "/reservation_info" },
     ],
-    [] // 로그아웃은 드롭다운 없음
+    [] 
   ];
 
   return (
@@ -66,7 +66,6 @@ function Navbar() {
           </ul>
           {dropdownOpen && (
             <div className="dropdown-bg">
-              {/* 로고 영역만큼 왼쪽에 placeholder */}
               <div className="dropdown-placeholder" />
               <div className="dropdown-menu">
                 {dropdownSections.map((section, idx) => (
