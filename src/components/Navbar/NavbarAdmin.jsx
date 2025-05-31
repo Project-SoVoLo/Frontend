@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import './NavbarAdmin.css';
 import logoImg from '../../assets/logo.png';
 import navBgImg from '../../assets/nav_bg.png';
-
+import { useNavigate } from 'react-router-dom';
 const NavbarAdmin = () => {
   const [jwtToken, setJwtToken] = useState(null);
-
+  const navigate = useNavigate(); 
   // 컴포넌트가 처음 렌더링될 때 JWT 토큰을 로드
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
