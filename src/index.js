@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom'; 
 import App from './App';
-import './globalstyle.css';  // ✅ 전역 스타일
+import './globalstyle.css';
 
 const rootElement = document.getElementById('root');
 
-// 안전하게 rootElement 존재 여부까지 확인
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <App />
+      <BrowserRouter>      
+        <App />
+      </BrowserRouter>
     </React.StrictMode>
   );
 } else {
