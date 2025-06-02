@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-import logoImg from "../Images/logo.png"; 
+import logoImg from "../Images/logo.png";
 
 function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,12 +36,12 @@ function Navbar() {
       { text: "카드뉴스", to: "/notice" },
     ],
     [
-      { text: "개인정보 수정", to: "/mypage" },
-      { text: "챗봇 상담 내역 확인", to: "/mypage" },
-      { text: "자가진단 내역 확인", to: "/mypage" },
-      { text: "호전상태", to: "/mypage" },
+      { text: "챗봇 상담 내역 확인", to: "/mypage?tab=counseling" },
+      { text: "자가진단 내역 확인", to: "/mypage?tab=self_test" },
+      { text: "호전상태", to: "/mypage?tab=emotion_chart" },
+      { text: "개인정보 수정", to: "/mypage?tab=edit_profile" },
     ],
-    [] 
+    []
   ];
 
   return (

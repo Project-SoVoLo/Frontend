@@ -1,12 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { dummyCounselings } from './dummyData.js';
+import './myPage.css';
 
 function Counseling() {
+  const [data, setData] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
-  if (detailItem) {
+  useEffect(() => {
+    fetch('/api/counseling') //실제 백엔드 API 주소
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('서버 응답 오류');
+        }
+        return response.json();
+      })
+      .then(json => setData(json))
+      .catch(err => {
+        console.error('데이터 로드 실패:', err);
+      });
+  }, []);
+
+  const fetchDetail = (id) => {
+    fetch(`/api/counselings/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error('상세 내용 불러오기 실패');
+        return res.json();
+      })
+      .then(data => setDetailItem(data))
+      .catch(err => console.error(err));
+  };
+
+  if (fetchDetail) {
     return (
       <div className="tab-content active">
         <h3>{detailItem.title}</h3>
@@ -17,8 +43,8 @@ function Counseling() {
     );
   }
 
-  const totalPages = Math.ceil(dummyCounselings.length / itemsPerPage);
-  const pageData = dummyCounselings.slice(
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const pageData = data.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );

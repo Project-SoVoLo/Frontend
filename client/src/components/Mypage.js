@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
-import Sidebar from './Sidebar.js';  // components 경로 수정 (상위 폴더에서 접근)
-import Counseling from './Counseling.js';
-import SelfTest from './SelfTest.js';
-import EmotionChart from './EmotionChart.js';
-import EditProfile from './EditProfile.js';
-import './myPage.css'; // CSS 파일 경로는 필요에 따라 수정하세요.
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import Counseling from './Counseling';
+import SelfTest from './SelfTest';
+import EmotionChart from './EmotionChart';
+import EditProfile from './EditProfile';
 
 function MyPage() {
-  const [activeTab, setActiveTab] = useState('counseling');
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'counseling';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    const newTab = searchParams.get('tab');
+    if (newTab && newTab !== activeTab) {
+      setActiveTab(newTab);
+    }
+  }, [searchParams, activeTab]);
 
   const renderContent = () => {
     switch (activeTab) {
       case 'counseling': return <Counseling />;
-      case 'selftest': return <SelfTest />;
-      case 'emotion': return <EmotionChart />;
-      case 'editprofile': return <EditProfile />;
+      case 'self_test': return <SelfTest />;
+      case 'emotion_chart': return <EmotionChart />;
+      case 'edit_profile': return <EditProfile />;
       default: return null;
     }
   };

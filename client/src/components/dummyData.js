@@ -1,13 +1,13 @@
 export const dummyCounselings = Array.from({ length: 37 }, (_, i) => ({
   id: i + 1,
-  title: `상담 제목 ${i + 1}`,
+  title: `${i + 1}번째 상담 로그`,
   date: `2024-01-${(i + 1).toString().padStart(2, '0')}`,
   content: `이것은 상담 ${i + 1}의 내용입니다.`,
 }));
 
 export const dummySelfTests = Array.from({ length: 18 }, (_, i) => ({
   id: i + 1,
-  title: `자가진단 ${i + 1}`,
+  title: `${i + 1}번째 자가진단`,
   date: `2024-02-${(i + 1).toString().padStart(2, '0')}`,
   content: `자가진단 ${i + 1}의 세부내용입니다.`,
 }));

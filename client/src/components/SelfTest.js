@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { dummySelfTests } from './dummyData.js';
+import './myPage.css';
 
 function SelfTest() {
   const [currentPage, setCurrentPage] = useState(1);

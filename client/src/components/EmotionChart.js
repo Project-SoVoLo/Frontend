@@ -1,7 +1,7 @@
-// src/components/EmotionChart.jsx
 import React, { useEffect, useRef } from 'react';
 import { moodData } from './dummyData.js';
 import Chart from 'chart.js/auto';
+import './myPage.css';
 
 function EmotionChart() {
   const canvasRef = useRef(null);
