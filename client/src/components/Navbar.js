@@ -41,7 +41,10 @@ function Navbar() {
       { text: "호전상태", to: "/mypage?tab=emotion_chart" },
       { text: "개인정보 수정", to: "/mypage?tab=edit_profile" },
     ],
-    []
+    [
+      { text: "로그인", to: "/"},
+      { text: "회원가입", to: "/sign_up"},
+    ]
   ];
 
   return (

@@ -10,6 +10,7 @@ import Counseling from "./components/Counseling.js";
 import SelfTest from "./components/SelfTest.js";
 import EmotionChart from "./components/EmotionChart.js";
 import EditProfile from "./components/EditProfile.js";
+import Signup from "./components/SignUp.js";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/self_test" element={<SelfTest />} />
             <Route path="/emotion_chart" element={<EmotionChart />} />
             <Route path="/edit_profile" element={<EditProfile />} />
+            <Route path="/sign_up" element={<Signup />} />
           </Routes>
         </main>
         <Footer />
