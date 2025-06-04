@@ -1,0 +1,182 @@
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Arial';
+  background-color: #F8F4E8;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 15%;
+  height: 85vh;
+  background-color: #f7eed6;
+  padding: 20px;
+  margin: 3%;
+  border-radius: 50px;
+  box-shadow: 0 0 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 200px 0;
+}
+
+.sidebar li {
+  padding: 30px 0;
+  cursor: pointer;
+  text-align: center;
+}
+
+.sidebar li:hover {
+  text-decoration: underline;
+}
+
+.sidebar li.active {
+  font-weight: bold;
+  background-color: #f9f5c6;
+  border-radius: 50px;
+  box-shadow: 2px 3px 4px #ccc;
+}
+
+/* 컨텐츠 */
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  margin: 3% 3%;
+  background-color: #f7eed6;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 50px;
+  box-shadow: 0 0 10px;
+}
+
+.tab-content {
+  display: none;
+  flex-grow: 1;
+  position: relative;
+  padding-bottom: 50px;
+}
+
+.tab-content.active {
+  display: block;
+  text-align: center;
+}
+
+.tab-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tab-content th,
+.tab-content td {
+  padding: 10px;
+  text-align: center;
+}
+
+.tab-content tr.clickable-row:hover {
+  background-color: #f9f5c6;
+  cursor: pointer;
+  border-radius: 50px;
+}
+
+.back-button {
+  position: absolute;
+  bottom: 0;
+  left: 50;
+  padding: 6px 12px;
+  background-color: #5c9dff;
+  color: white;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.back-button:hover{
+  background-color: #c7c7c7;
+}
+
+/* 페이지네이션 영역 */
+.pagination {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+  background-color: #f7eed6;
+  margin-top: 0;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.pagination button:hover {
+  background-color: #ccc;
+}
+
+.pagination button.active {
+  background-color: #5c9dff;
+  color: white;
+}
+
+/* 개인정보 */
+.profile-edit-container {
+  padding: 20px;
+  background-color: #fff9e8;
+  width: 60%;
+  margin: 200px auto;
+  border-radius: 50px;
+}
+
+.form-group {
+  margin: 80px 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#profileForm label {
+  width: 30%;
+  font-weight: bold;
+}
+
+#profileForm input {
+  width: 65%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+}
+
+#profileForm button {
+  padding: 10px 20px;
+  background-color: #5c9dff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin: 20px auto 0;
+}
+
+#profileForm button:hover {
+  background-color: #ccc;
+}
