@@ -1,5 +1,6 @@
-.login-container {
+.login-extra-info-container {
   display: flex;
+  flex-direction: column; /* 세로로 배치 */
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -7,7 +8,15 @@
   background-color: #F8F4E8;
 }
 
-.login-form {
+.login-extra-info-title {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-extra-info-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,14 +27,8 @@
   width: 320px;
 }
 
-.login-form h2 {
-  margin-bottom: 20px;
-  text-align: center;
-  color: #333;
-  font-weight: bold;
-}
-
-.login-form input {
+.login-extra-info-form input,
+.login-extra-info-form select {
   margin-bottom: 15px;
   padding: 12px;
   font-size: 16px;
@@ -37,12 +40,13 @@
   box-sizing: border-box;
 }
 
-.login-form input:focus {
+.login-extra-info-form input:focus,
+.login-extra-info-form select:focus {
   outline: none;
   border: 1.5px solid #FFD46C;
 }
 
-.login-form button {
+.login-extra-info-form button {
   width: 300px;
   height: 45px;
   padding: 0;
@@ -54,35 +58,9 @@
   cursor: pointer;
   border-radius: 6px;
   transition: background-color 0.2s;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
-.login-form button:hover {
+.login-extra-info-form button:hover {
   background-color: #f5c94f;
-}
-
-#kakao-login {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  width: 300px;
-  height: 45px;
-  padding: 0;
-}
-
-#kakao-login img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 6px;
-}
-
-#join {
-  background-color: white;
-  width: 150px;
-  height: 45px;
-  padding: 0;
-  margin-top: 5px;
 }
