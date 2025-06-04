@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-import logoImg from "../Images/logo.png"; 
+import logoImg from "../../Images/logo.png";
 
 function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -30,18 +30,22 @@ function Navbar() {
       { text: "치료센터/병원위치", to: "/location_and_pharmacies" },
     ],
     [
-      { text: "공지사항", to: "/notice" },
-      { text: "커뮤니티", to: "/health_magazine" },
-      { text: "건의사항", to: "/receiving_suggestion" },
-      { text: "카드뉴스", to: "/notice" },
+      { text: "공지사항", to: "/community?tab=notice" },
+      { text: "커뮤니티", to: "/community?tab=board" },
+      { text: "건의사항", to: "/community?tab=suggestion" },
+      { text: "카드뉴스", to: "/community?tab=cardNews" },
+    ]
+,
+    [
+      { text: "챗봇 상담 내역 확인", to: "/mypage?tab=counseling" },
+      { text: "자가진단 내역 확인", to: "/mypage?tab=self_test" },
+      { text: "호전상태", to: "/mypage?tab=emotion_chart" },
+      { text: "개인정보 수정", to: "/mypage?tab=edit_profile" },
     ],
     [
-      { text: "개인정보 수정", to: "/reservation_info" },
-      { text: "챗봇 상담 내역 확인", to: "/modify" },
-      { text: "자가진단 내역 확인", to: "/questionnaire" },
-      { text: "호전상태", to: "/reservation_info" },
-    ],
-    [] 
+      { text: "로그인", to: "/login"},
+      { text: "회원가입", to: "/signup"},
+    ]
   ];
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import './ChatInput.css';
+import axios from "axios";
 
 export default function ChatInput({ onSend }) {
   const [input, setInput] = useState("");
@@ -23,11 +24,16 @@ export default function ChatInput({ onSend }) {
     formData.append("audio", audioBlob, "recording.webm");
 
     try {
-      const response = await fetch("http://localhost:5001/api/whisper", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
+      const response = await axios.post(
+        "http://localhost:5001/api/whisper",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const data = response.data;
       if (data.text) {
         setInput(prev => (prev ? prev + " " : "") + data.text);
       } else {

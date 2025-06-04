@@ -6,7 +6,7 @@ import openai
 app = Flask(__name__)
 CORS(app)
 
-openai.api_key = "api_key"
+openai.api_key = "API_KEY"
 
 @app.route('/api/whisper', methods=['POST', 'OPTIONS'])
 def transcribe():

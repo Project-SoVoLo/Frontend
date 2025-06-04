@@ -1,10 +1,20 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // 추가
-import Navbar from "./components/Navbar";
-import Chatbot from "./components/Chatbot";
-import Footer from "./components/Footer";
-import Main from "./components/Main";
-import Diagnosis from "./components/Diagnosis.js";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar.js";
+import Chatbot from "./components/Chatbot/Chatbot.js";
+import Footer from "./components/Footer/Footer.js";
+import Main from "./components/Main/Main.js";
+import Diagnosis from "./components/Diagnosis/Diagnosis.js";
+import Community from "./components/Community/Community.js";
+import Mypage from "./components/Mypage/Mypage.js";
+import Login from "./components/Login/Login.js";
+import Signup from "./components/Signup/Signup.js";
+import Counseling from "./components/Mypage/Counseling.js";
+import SelfTest from "./components/Mypage/SelfTest.js";
+import EmotionChart from "./components/Mypage/EmotionChart.js";
+import EditProfile from "./components/Mypage/EditProfile.js";
+
+
 
 function App() {
   return (
@@ -16,6 +26,14 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/chat" element={<Chatbot />} />
             <Route path="/diagnosis" element={<Diagnosis />} />
+            <Route path="/community" element={<Community />}/>
+            <Route path="/mypage" element={<Mypage/>}/>
+            <Route path="/counseling" element={<Counseling />} />
+            <Route path="/self_test" element={<SelfTest />} />
+            <Route path="/emotion_chart" element={<EmotionChart />} />
+            <Route path="/edit_profile" element={<EditProfile />} />
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<Signup/>}/>
           </Routes>
         </main>
         <Footer />

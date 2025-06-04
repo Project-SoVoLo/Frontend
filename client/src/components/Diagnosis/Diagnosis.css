@@ -1,5 +1,5 @@
 .diagnosis-container {
-  max-width: 800px;
+  width: 60%;
   margin: 40px auto 0 auto;
   padding: 32px 24px 24px 24px;
   background: #fffdfa;
@@ -42,7 +42,7 @@
 
 .diagnosis-radio {
   flex: 1 1 0;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -52,6 +52,7 @@
 .diagnosis-radio input[type="radio"] {
   accent-color: #ffd85c;
   margin-right: 6px;
+  
 }
 
 .diagnosis-submit-btn {

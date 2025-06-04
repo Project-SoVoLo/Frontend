@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import "./Chatbot.css";
+import axios from "axios";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
@@ -15,12 +16,10 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5001/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+      const response = await axios.post("http://localhost:5001/api/chat", {
+        message: text,
       });
-      const data = await response.json();
+      const data = response.data;
       if (data.text) {
         setMessages([...newMessages, { from: "bot", text: data.text }]);
       } else {
@@ -36,6 +35,10 @@ export default function Chatbot() {
       ]);
     }
     setLoading(false);
+
+    axios.post("http://localhost:8080/api/phq9/predict", { text })
+      .catch(() => { console.log("post 실패")});
+      //현재 토큰 지급관련 api 수정 필요한 상태 -> 월요일 회의 이후 수정 예정
   };
 
   return (
