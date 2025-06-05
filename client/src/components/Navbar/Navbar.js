@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logoImg from "../../Images/logo.png";
 
 function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const token = localStorage.getItem('token'); 
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    alert("로그아웃되었습니다.");
+    navigate('/login'); 
+  };
 
   const menuItems = [
     "상담",
@@ -13,9 +21,8 @@ function Navbar() {
     "마인드케어",
     "커뮤니티",
     "마이페이지",
-    "로그인",
+    token ? "로그아웃" : "로그인" 
   ];
-
 
   const dropdownSections = [
     [
@@ -34,18 +41,21 @@ function Navbar() {
       { text: "커뮤니티", to: "/community?tab=board" },
       { text: "건의사항", to: "/community?tab=suggestion" },
       { text: "카드뉴스", to: "/community?tab=cardNews" },
-    ]
-,
+    ],
     [
       { text: "챗봇 상담 내역 확인", to: "/mypage?tab=counseling" },
       { text: "자가진단 내역 확인", to: "/mypage?tab=self_test" },
       { text: "호전상태", to: "/mypage?tab=emotion_chart" },
       { text: "개인정보 수정", to: "/mypage?tab=edit_profile" },
     ],
-    [
-      { text: "로그인", to: "/login"},
-      { text: "회원가입", to: "/signup"},
-    ]
+    token
+      ? [
+          { text: "로그아웃", to: "#", onClick: handleLogout }
+        ]
+      : [
+          { text: "로그인", to: "/login" },
+          { text: "회원가입", to: "/signup" },
+        ]
   ];
 
   return (
@@ -64,7 +74,13 @@ function Navbar() {
           <ul className="nav-menu">
             {menuItems.map((item, idx) => (
               <li key={item} className="nav-menu-item">
-                <span>{item}</span>
+                <span
+                  onClick={() => {
+                    if (item === "로그아웃") handleLogout();
+                  }}
+                >
+                  {item}
+                </span>
               </li>
             ))}
           </ul>
@@ -75,13 +91,24 @@ function Navbar() {
                 {dropdownSections.map((section, idx) => (
                   <div className="dropdown-section" key={idx}>
                     {section.map((btn) => (
-                      <Link
-                        to={btn.to}
-                        className="dropdown-btn"
-                        key={btn.text}
-                      >
-                        {btn.text}
-                      </Link>
+                      btn.onClick ? (
+                        <span
+                          key={btn.text}
+                          className="dropdown-btn"
+                          onClick={btn.onClick}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {btn.text}
+                        </span>
+                      ) : (
+                        <Link
+                          to={btn.to}
+                          className="dropdown-btn"
+                          key={btn.text}
+                        >
+                          {btn.text}
+                        </Link>
+                      )
                     ))}
                   </div>
                 ))}
