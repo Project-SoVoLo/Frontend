@@ -11,7 +11,7 @@ function Counseling() {
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 15;
 
-  // 예시용 토큰 - 실제 토큰으로 교체하거나 상태관리에서 받아오세요
+  // 예시용 토큰
   const token = 'YOUR_ACCESS_TOKEN';
 
   useEffect(() => {
