@@ -23,7 +23,7 @@ input {
 .idChecked{
   background-color: #FFD46C;
   color: #333;
-  font-size: 10px;
+  font-size: 14px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
