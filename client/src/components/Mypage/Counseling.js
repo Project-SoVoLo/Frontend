@@ -11,24 +11,30 @@ function Counseling() {
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 15;
 
-  // 예시용 토큰
-  const token = 'YOUR_ACCESS_TOKEN';
+  //localStorage에서 토큰 가져오기
+  const token = localStorage.getItem('accessToken'); // 로그인 시 저장한 키 이름과 동일해야 함
 
   useEffect(() => {
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      nav('/login');
+      return;
+    }
+
     axios.get('/api/mypage/chat-summaries', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-      .then(response => {
-        setData(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('데이터 로드 실패:', error);
-        setLoading(false);
-      });
-  }, []);
+    .then(response => {
+      setData(response.data || []);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('데이터 로드 실패:', error);
+      setLoading(false);
+    });
+  }, [token, nav]);
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const pageData = data.slice(
@@ -38,6 +44,10 @@ function Counseling() {
 
   if (loading) {
     return <div className="tab-content active">상담 데이터를 불러오는 중입니다...</div>;
+  }
+
+  if (!loading && data.length === 0) {
+    return <div className="tab-content active">상담기록이 없습니다.</div>;
   }
 
   if (detailItem) {
