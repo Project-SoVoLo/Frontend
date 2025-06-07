@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axios';  
 import './LoginExtraInfo.css';
 
 function LoginExtraInfo() {
@@ -13,14 +13,18 @@ function LoginExtraInfo() {
     e.preventDefault();
     try {
       console.log("폼 제출됨:", { gender, birth, phone });
+
+      // 인터셉터로 토큰 자동 추가
       await axios.post('/api/users/update-info', {
         userGender: gender,
         userBirth: birth,
         userPhone: phone
       });
+
       alert('추가 정보 저장 완료');
       navigate('/');
     } catch (error) {
+      console.error('추가 정보 저장 실패:', error.response ? error.response.data : error.message);
       alert('추가 정보 저장 실패');
     }
   };

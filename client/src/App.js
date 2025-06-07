@@ -14,8 +14,7 @@ import SelfTest from "./components/Mypage/SelfTest.js";
 import EmotionChart from "./components/Mypage/EmotionChart.js";
 import EditProfile from "./components/Mypage/EditProfile.js";
 import LoginExtraInfo from "./components/LoginExtraInfo/LoginExtraInfo.js";
-
-
+import KakaoCallback from "./components/Login/KakaoCallback.js";  
 
 function App() {
   return (
@@ -27,16 +26,16 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/chat" element={<Chatbot />} />
             <Route path="/diagnosis" element={<Diagnosis />} />
-            <Route path="/community" element={<Community />}/>
-            <Route path="/mypage" element={<Mypage/>}/>
+            <Route path="/community" element={<Community />} />
+            <Route path="/mypage" element={<Mypage />} />
             <Route path="/counseling" element={<Counseling />} />
             <Route path="/self_test" element={<SelfTest />} />
             <Route path="/emotion_chart" element={<EmotionChart />} />
             <Route path="/edit_profile" element={<EditProfile />} />
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
-            <Route path="/login-extra-info" element={<LoginExtraInfo/>} />
-
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login-extra-info" element={<LoginExtraInfo />} />
+            <Route path="/kakao/callback" element={<KakaoCallback />} /> 
           </Routes>
         </main>
         <Footer />
