@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './Mypage.css';
-//import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Counseling() {
-  //const nav = useNavigate();
+  const nav = useNavigate();
   const [data, setData] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
   const itemsPerPage = 15;
+  const [loading, setLoading] = useState(true);
 
-  // 예시용 토큰 - 실제 토큰으로 교체하거나 상태관리에서 받아오세요
-  const token = 'YOUR_ACCESS_TOKEN';
-
+  // 전체 요약 목록 불러오기
   useEffect(() => {
-    axios.get('/api/mypage/chat-summaries', {
+    fetch('/api/mypage/chat-summaries', {
       headers: {
-        Authorization: Bearer ${token}
+        Authorization: 'Bearer YOUR_ACCESS_TOKEN' // 실제 토큰으로 교체 필요
       }
     })
       .then(response => {
-        setData(response.data);
+        if (!response.ok) throw new Error('서버 응답 오류');
+        return response.json();
+      })
+      .then(json => {
+        setData(json);
         setLoading(false);
       })
-      .catch(error => {
-        console.error('데이터 로드 실패:', error);
+      .catch(err => {
+        console.error('데이터 로드 실패:', err);
         setLoading(false);
       });
   }, []);
@@ -39,9 +40,7 @@ function Counseling() {
   if (loading) {
     return <div className="tab-content active">상담 데이터를 불러오는 중입니다...</div>;
   }
-  if (!loading && data.length === 0) {
-    return <div className="tab-content active">상담기록이 없습니다.</div>;
-  }
+
   if (detailItem) {
     return (
       <div className="tab-content active">
