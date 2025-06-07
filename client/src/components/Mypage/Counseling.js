@@ -10,7 +10,7 @@ function Counseling() {
   const itemsPerPage = 15;
 
   useEffect(() => {
-    fetch('/api/counseling') //실제 백엔드 API 주소
+    fetch('/api/mypage/chat-summaries') //실제 백엔드 API 주소
       .then(response => {
         if (!response.ok) {
           throw new Error('서버 응답 오류');
