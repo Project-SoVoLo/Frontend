@@ -13,8 +13,8 @@ import Counseling from "./components/Mypage/Counseling.js";
 import SelfTest from "./components/Mypage/SelfTest.js";
 import EmotionChart from "./components/Mypage/EmotionChart.js";
 import EditProfile from "./components/Mypage/EditProfile.js";
-
-
+import LoginExtraInfo from "./components/LoginExtraInfo/LoginExtraInfo.js";
+import KakaoCallback from "./components/Login/KaKaoCallback.js";  
 
 function App() {
   return (
@@ -34,6 +34,8 @@ function App() {
             <Route path="/edit_profile" element={<EditProfile />} />
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
+            <Route path="/login-extra-info" element={<LoginExtraInfo/>}/>
+             <Route path="/kakao/callback" element={<KakaoCallback />} />
           </Routes>
         </main>
         <Footer />

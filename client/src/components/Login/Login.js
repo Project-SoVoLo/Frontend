@@ -1,18 +1,34 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
-import './Login.css'; // 스타일은 따로 관리
-import { Link } from 'react-router-dom';
+import './Login.css';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
+import kakaoLoginImg from '../../Images/kakao_login.png'; 
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // 로그인 성공 시 페이지 이동
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 여기서 실제 로그인 API 호출 또는 인증 로직 작성
-    console.log('이메일:', email);
-    console.log('비밀번호:', password);
-    alert('로그인 시도됨');
+    try {
+      const response = await axios.post('/api/users/login', {
+        userEmail: email,
+        password: password
+      });
+      console.log("로그인 성공:", response.data);
+      localStorage.setItem('token', response.data.token);
+      alert('로그인 성공!');
+      // 메인 페이지로 이동
+      navigate('/');
+    } catch (error) {
+      console.error("로그인 실패:", error.response ? error.response.data : error.message);
+      alert('로그인 실패. 이메일과 비밀번호를 확인해 주세요.');
+    }
+  };
+
+  const handleKakaoLogin = () => {
+    window.location.href = '/api/oauth/kakao/login';
   };
 
   return (
@@ -33,9 +49,12 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button id = "login" type="submit">로그인</button>
-        <Link to='/join'>
-        <button id = "join">회원가입</button>
+        <button id="login" type="submit">로그인</button>
+        <button id="kakao-login" type="button" onClick={handleKakaoLogin}>
+          <img src={kakaoLoginImg} alt="카카오 로그인" />
+        </button>
+        <Link to="/join">
+          <button id="join" type="button">회원가입</button>
         </Link>
       </form>
     </div>
