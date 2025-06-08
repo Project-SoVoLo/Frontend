@@ -2,7 +2,7 @@
   width: 400px;
   margin: 5% auto;
   padding: 20px;
-  background: #fff;
+  background: #F8F4E8;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   font-family: sans-serif;
@@ -11,8 +11,26 @@
   gap: 12px;
 }
 
-input{
+.form-submit h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+input {
   margin-left: 5px;
+}
+
+.idChecked{
+  background-color: #FFD46C;
+  color: #333;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.idChecked:hover {
+  background-color: #f5c94f;
 }
 
 .input-box, .select-box {
@@ -37,7 +55,7 @@ input{
 
 .input-box .suffix {
   font-size: 14px;
-  color: gray;
+  color: #FFD46C;
 }
 
 .icon {
@@ -45,15 +63,6 @@ input{
   height: 16px;
   border-radius: 50%;
 }
-
-/* 아이콘 별 클래스를 넣으면 구분 가능 */
-.icon.user::before { content: "👤"; }
-.icon.lock::before { content: "🔒"; }
-.icon.eye::before { content: "🐵"; }
-.icon.email::before { content: "✉️"; }
-.icon.calendar::before { content: "📅"; }
-.icon.antenna::before { content: "📡"; }
-.icon.phone::before { content: "📱"; }
 
 .radio-group {
   display: flex;
@@ -89,10 +98,25 @@ input{
   content: "🙈"; /* 또는 숨김 아이콘 */
 }
 
-.submit-button {
+#register {
   display: flex;
-  align-items: center;
-  position: relative;
+  width: 390px;
+  height: 45px;
   margin: 5px;
   padding: 5px;
+  background-color: #FFD46C;
+  color: #333;
+  font-weight: bold;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
 } 
+
+#register:hover {
+  background-color: #f5c94f
+}
