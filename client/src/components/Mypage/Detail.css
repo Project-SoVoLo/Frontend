@@ -1,0 +1,52 @@
+/* src/components/Mypage/CounselingDetail.css */
+
+/* 날짜 중앙 정렬 및 굵게 */
+.counseling-detail-date {
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 테이블 전체 스타일 */
+.counseling-detail-table {
+  width: 100%;
+  border-collapse: collapse; /* 셀 경계선 겹치기 */
+  margin-bottom: 15px; /* 버튼과의 간격 */
+}
+
+/* 테이블 헤더/레이블 셀 (요약, 피드백, 감정) */
+.counseling-detail-table td:first-child {
+  width: 20%; /* 레이블 셀 너비 */
+  padding: 8px;
+  border: 1px solid #ddd;
+  font-weight: bold;
+  background-color: #f2f2f2;
+}
+
+/* 테이블 내용 셀 */
+.counseling-detail-table td:last-child {
+  width: 80%; /* 내용 셀 너비 */
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+/* 구분선 */
+.counseling-detail-divider {
+  border-top: 1px solid #eee;
+  margin: 15px 0; /* 위아래 여백 */
+}
+
+/* 뒤로 가기 버튼 (기존 스타일이 있다면 그대로 사용) */
+.back-button {
+  /* 예시 스타일 (프로젝트의 기본 버튼 스타일에 따라 다름) */
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
