@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import kakaoLoginImg from '../../Images/kakao_login.png'; 
 
 function Login() {
