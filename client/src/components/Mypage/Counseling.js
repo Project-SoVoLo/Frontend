@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Mypage.css';
+import './Detail.css';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import { format } from 'date-fns';  //npm install date-fns 필요
@@ -53,10 +54,25 @@ function Counseling() {
   if (detailItem) {
     return (
       <div className="tab-content active">
-        <p><strong>날짜:</strong> {format(new Date(detailItem.date), 'yyyy-MM-dd')}</p>
-        <h3>요약: {detailItem.summary}</h3>
-        <p><strong>피드백:</strong> {detailItem.feedback}</p>
-        <p><strong>감정:</strong> {detailItem.emotionKo}</p>
+        <p className="counseling-detail-date">
+          {format(new Date(detailItem.date), 'yyyy-MM-dd')}
+        </p>
+        <table className="counseling-detail-table">
+          <tbody>
+            <tr>
+              <td>요약</td>
+              <td>{detailItem.summary}</td>
+            </tr>
+            <tr>
+              <td>피드백</td>
+              <td>{detailItem.feedback}</td>
+            </tr>
+            <tr>
+              <td>감정</td>
+              <td>{detailItem.emotionKo}</td>
+            </tr>
+          </tbody>
+        </table>
         <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
           ← 목록으로
         </button>
