@@ -26,8 +26,8 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/chat" element={<Chatbot />} />
             <Route path="/diagnosis" element={<Diagnosis />} />
-            <Route path="/community" element={<Community />}/>
-            <Route path="/mypage" element={<Mypage/>}/>
+            <Route path="/community" element={<Community />} />
+            <Route path="/mypage" element={<Mypage />} />
             <Route path="/counseling" element={<Counseling />} />
             <Route path="/self_test" element={<SelfTest />} />
             <Route path="/emotion_chart" element={<EmotionChart />} />
