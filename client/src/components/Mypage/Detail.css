@@ -1,5 +1,3 @@
-/* src/components/Mypage/CounselingDetail.css */
-
 .counseling-detail-date {
   text-align: center;
   font-weight: bold;
@@ -7,8 +5,8 @@
 
 .counseling-detail-table {
   width: 100%;
-  border-collapse: collapse; /* 셀 경계선 겹치기 */
-  margin-bottom: 15px; /* 버튼과의 간격 */
+  border-collapse: collapse;
+  margin-bottom: 15px;
 }
 
 /* 테이블 헤더/레이블 셀 */
