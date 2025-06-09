@@ -33,7 +33,7 @@ input {
   background-color: #f5c94f;
 }
 
-.input-box, .select-box {
+.input-box {
   display: flex;
   align-items: center;
   border: 1px solid #ddd;
@@ -44,7 +44,7 @@ input {
   position: relative;
 }
 
-.input-box input, .select-box select {
+.input-box input {
   flex: 1;
   border: none;
   background: transparent;
@@ -92,10 +92,6 @@ input {
   padding: 10px;
   border-radius: 6px;
   font-size: 14px;
-}
-
-.icon.eye.closed::before {
-  content: "🙈"; /* 또는 숨김 아이콘 */
 }
 
 #register {
