@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Sidebar.css';
 
 const tabs = [
   { key: 'counseling', label: '상담내역' },
@@ -12,16 +13,16 @@ function Sidebar({ activeTab, setActiveTab }) {
   const navigate = useNavigate();
 
   const handleTabClick = (key) => {
-    setActiveTab(key);                // 내부 상태 변경
-    navigate(`/mypage?tab=${key}`);  // URL 쿼리도 변경
+    setActiveTab(key);
+    navigate(`/mypage?tab=${key}`);
   };
 
   return (
-    <ul>
+    <ul className="sidebar">
       {tabs.map(tab => (
         <li
           key={tab.key}
-          className={activeTab === tab.key ? 'active' : ''}
+          className={`sidebar-item ${activeTab === tab.key ? 'active' : ''}`}
           onClick={() => handleTabClick(tab.key)}
         >
           {tab.label}
