@@ -6,6 +6,11 @@ function KakaoCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 카카오 로그인 한 사용자 정보 디버깅
+    console.log("👉 token:", localStorage.getItem("token"));
+    console.log("👉 userEmail:", localStorage.getItem("userEmail"));
+
+
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
 
@@ -15,13 +20,21 @@ function KakaoCallback() {
         redirect_uri: 'http://localhost:3000/kakao/callback'
       })
       .then(response => {
-        console.log("카카오 토큰 발급 성공:", response.data);
-        localStorage.setItem('token', response.data.token);
-        navigate('/login-extra-info');
+        const { token, nextStep, userEmail } = response.data;
+
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('userEmail', userEmail);
+        }
+
+        // 기본 fallback 경로
+        const destination = nextStep || '/home';
+        setTimeout(() => navigate(destination), 100);   // 저장되고 이동하도록 약간 지연
       })
       .catch(error => {
         console.error("카카오 토큰 발급 실패:", error.response ? error.response.data : error.message);
         alert('카카오 로그인 실패');
+        navigate('/login');
       });
     }
   }, [navigate]);

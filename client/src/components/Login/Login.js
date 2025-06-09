@@ -28,7 +28,7 @@ function Login() {
   };
 
   const handleKakaoLogin = () => {
-    window.location.href = '/api/oauth/kakao/login';
+      window.location.href = 'http://localhost:8080/api/oauth/kakao/login'; //절대경로 
   };
 
   return (

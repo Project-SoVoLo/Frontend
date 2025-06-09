@@ -14,8 +14,15 @@ function LoginExtraInfo() {
     try {
       console.log("폼 제출됨:", { gender, birth, phone });
 
+      const userEmail = localStorage.getItem('userEmail');
+      const userName = localStorage.getItem('userName');
+      const nickName = localStorage.getItem('nickName');
+
       // 인터셉터로 토큰 자동 추가
       await axios.post('/api/users/update-info', {
+        userEmail,    // 백엔드에서 요구하는 형식에 맞춤
+        userName,
+        nickName,
         userGender: gender,
         userBirth: birth,
         userPhone: phone
