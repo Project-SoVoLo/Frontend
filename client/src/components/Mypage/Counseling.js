@@ -11,7 +11,7 @@ function Counseling() {
   const [detailItem, setDetailItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
 
   const token = localStorage.getItem('accessToken');
 
@@ -53,6 +53,7 @@ function Counseling() {
 
   if (detailItem) {
     return (
+      <div className="content">
       <div className="tab-content active">
         <p className="counseling-detail-date">
           {format(new Date(detailItem.date), 'yyyy-MM-dd')}
@@ -76,6 +77,7 @@ function Counseling() {
         <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
           ← 목록으로
         </button>
+      </div>
       </div>
     );
   }
