@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+//import axios from 'axios';
 import "./Signup.css";
-
 
 function Signup() {
   const nav = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     password: "",
@@ -17,7 +16,7 @@ function Signup() {
     phone: "",
     email: "",
   });
-
+  //const response = axios.post('/api/users/register', formData, );
   const [idChecked, setIdChecked] = useState(false);
   const checkIdDuplicate = () => {
     const savedUser = sessionStorage.getItem("user");
@@ -47,25 +46,26 @@ function Signup() {
   const onSubmitForm = (e) => {
     e.preventDefault();
 
-    const { id, password, password_check } = formData;
+    const { id, password, password_confirm } = formData;
 
     if (!id) return alert("아이디를 입력해주세요");
     if (!idChecked) return alert("아이디 중복 확인을 해주세요");
     if (!password) return alert("비밀번호를 입력해주세요");
-    if (!password_check) return alert("비밀번호 확인을 입력해주세요");
-    if (password !== password_check) return alert("입력한 비밀번호가 같지 않습니다.");
+    if (!password_confirm) return alert("비밀번호 확인을 입력해주세요");
+    if (password !== password_confirm) return alert("입력한 비밀번호가 같지 않습니다.");
 
     sessionStorage.setItem("user", JSON.stringify(formData));
     alert("회원가입 성공하였습니다!");
     nav("/login");
   };
+
   return (
     <div className="signup-container">
-      <form className="form-submit" onSubmit={onSubmitForm}>
+      <form className="form-submit" action="/" onSubmit={onSubmitForm}>
         <div className="input-box">
-          <i className="icon user" />
           <input
             className="id"
+            name="id"
             type="text"
             placeholder="아이디"
             onChange={onChangeForm} />
@@ -74,72 +74,58 @@ function Signup() {
           </button>
         </div>
         <div className="input-box">
-          <i className="icon lock" />
           <input
             className="password"
-            type={showPassword ? "text" : "password"}
+            name="password"
+            type="password"
             placeholder="비밀번호"
             onSubmit={onChangeForm}
           />
-          <i
-            className={`icon eye ${showPassword ? "" : "closed"}`}
-            onClick={() => setShowPassword(!showPassword)}
-          />
         </div>
         <div className="input-box">
-          <i className="icon lock" />
           <input
-          type="password"
-            className="password_check"
+            className="password_confirm"
+            name="password_confirm"
+            type="password"
             placeholder="비밀번호확인"
             onSubmit={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon email" />
           <input
-
             type="email"
+            name="email"
             placeholder="이메일주소"
             onSubmit={onChangeForm} />
         </div>
         <div className="input-box">
-          <i className="icon user" />
           <input
             type="text"
+            name="name"
             placeholder="이름"
             onSubmit={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon user" />
           <input
             type="text"
+            name="nickname"
             placeholder="닉네임"
             onSubmit={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon calendar" />
           <input
             type="text"
+            name="birth"
             placeholder="생년월일 8자리"
             onSubmit={onChangeForm}
           />
         </div>
-        <div className="select-box">
-          <i className="icon antenna" />
-          <select>
-            <option>통신사 선택</option>
-            <option>SKT</option>
-            <option>KT</option>
-            <option>LG U+</option>
-          </select>
-        </div>
         <div className="input-box">
-          <i className="icon phone" />
           <input
             type="text"
+            name="phone"
             placeholder="휴대전화번호"
             onSubmit={onChangeForm}
           />
@@ -147,11 +133,9 @@ function Signup() {
         <div className="radio-group">
           <label><input type="radio" name="gender" /> 남자</label>
           <label><input type="radio" name="gender" /> 여자</label>
-          <label><input type="radio" name="nationality" /> 내국인</label>
-          <label><input type="radio" name="nationality" /> 외국인</label>
         </div>
         <div className="submit-button">
-          <button type="submit">회원가입</button>
+          <button id="register" type="submit">회원가입</button>
         </div>
       </form>
     </div>
