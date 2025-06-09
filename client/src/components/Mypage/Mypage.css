@@ -1,61 +1,27 @@
 body {
-  height: 100%;
-  margin: 0;
-  font-family: 'Arial';
   background-color: #F8F4E8;
 }
 
 .container {
-  display: flex;
-  height: 100vh;
-}
-
-/* 사이드바 */
-.sidebar {
-  width: 15%;
-  height: 85vh;
-  background-color: #f7eed6;
-  padding: 20px;
-  margin: 3%;
-  border-radius: 50px;
-  box-shadow: 0 0 10px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 200px 0;
-}
-
-.sidebar li {
-  padding: 30px 0;
-  cursor: pointer;
-  text-align: center;
-}
-
-.sidebar li:hover {
-  text-decoration: underline;
-}
-
-.sidebar li.active {
-  font-weight: bold;
-  background-color: #f9f5c6;
-  border-radius: 50px;
-  box-shadow: 2px 3px 4px #ccc;
+  width: 100%;
+  height: 900px;
+  max-width: 1400px;
+  min-height: 100vh;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* 컨텐츠 */
 .content {
   flex-grow: 1;
-  padding: 20px;
-  margin: 3% 3%;
-  background-color: #f7eed6;
-  height: 90vh;
+  padding: 40px;
+  background-color: white;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  border-radius: 50px;
-  box-shadow: 0 0 10px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .tab-content {
@@ -82,8 +48,12 @@ body {
   text-align: center;
 }
 
+.tab-content tr {
+  height: 6vh;
+}
+
 .tab-content tr.clickable-row:hover {
-  background-color: #f9f5c6;
+  background-color: #fef3c7;
   cursor: pointer;
   border-radius: 50px;
 }
@@ -102,7 +72,7 @@ body {
   font-weight: bold;
 }
 
-.back-button:hover{
+.back-button:hover {
   background-color: #c7c7c7;
 }
 
@@ -115,7 +85,7 @@ body {
   text-align: center;
   padding: 10px 0;
   border-top: 1px solid #ccc;
-  background-color: #f7eed6;
+  background-color: white;
   margin-top: 0;
 }
 
@@ -133,7 +103,7 @@ body {
 }
 
 .pagination button.active {
-  background-color: #5c9dff;
+  background-color: #ffd46c;
   color: white;
 }
 
