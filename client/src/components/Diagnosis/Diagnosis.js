@@ -1,80 +1,124 @@
-import React, { useState } from 'react';
-import "./Diagnosis.css";
+import React, { useState, useEffect } from "react";
+import styles from './Diagnosis.module.css';
 
-const questions = [
-  '1. 매사에 흥미나 즐거움이 거의 없다.',
-  '2. 기분이 가라앉거나 우울하거나 희망이 없다고 느낀다.',
-  '3. 잠들기 어렵거나 자주 깬다. 혹은 잠을 너무 많이 잔다.',
-  '4. 피곤하다고 느끼거나 기운이 거의 없다.',
-  '5. 식욕이 줄었다. 혹은 너무 많이 먹는다.',
-  '6. 내 자신이 실패자로 여겨지거나 자신과 가족을 실망시켰다고 느낀다.',
-  '7. 신문을 읽거나 TV를 보는 것과 같은 일상적인 일에 집중하기 어렵다.',
-    [
-    '8. 다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느리다.',
-    '\u00A0\u00A0\u00A0\u00A0혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없다.'
-    ],
-  '9. 차라리 죽는 것이 낫겠다고 생각하거나, 어떻게든 자해를 하려고 생각한다.',
-];
-
-const options = [
-  '전혀 아니다',
-  '아니다',
-  '보통이다',
-  '그렇다',
-  '매우 그렇다'
+const choices = [
+  { value: 1, label: "전혀 아니다" },
+  { value: 2, label: "아니다" },
+  { value: 3, label: "보통이다" },
+  { value: 4, label: "그렇다" },
+  { value: 5, label: "그렇지 않다" },
 ];
 
 function Diagnosis() {
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [tests, setTests] = useState([]);
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (index, value) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = value;
-    setAnswers(newAnswers);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/diagnosis/types")
+      .then(res => res.json())
+      .then(data => {
+        setTests(data);
+        if (data.length > 0) setSelectedTest(data[0].key);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!selectedTest) return;
+    setLoading(true);
+    fetch(`http://localhost:8080/api/diagnosis/questions?type=${selectedTest}`)
+      .then(res => res.json())
+      .then(data => {
+        setQuestions(data);
+        setAnswers(Array(data.length).fill(null));
+        setLoading(false);
+      });
+  }, [selectedTest]);
+
+  const handleAnswerChange = (questionIdx, value) => {
+    setAnswers(prev =>
+      prev.map((ans, idx) => (idx === questionIdx ? value : ans))
+    );
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('검사가 제출되었습니다.');
+    if (answers.some(ans => ans === null)) {
+      alert("모든 문항에 답변해 주세요.");
+      return;
+    }
+    // 결과 처리 로직 추가해야 함. API 연결 필요. 어디로 보낼것인가.
+    alert("자가진단이 제출되었습니다.\n(실제 결과 계산 및 안내는 추가 구현 필요)");
   };
 
   return (
-    <div className="diagnosis-container">
-      <h2 className="diagnosis-title">자가진단 검사</h2>
-      <form onSubmit={handleSubmit}>
-        {questions.map((question, index) => (
-          <div className="diagnosis-question-block" key={index}>
-            <div className="diagnosis-question">
-              {Array.isArray(question)
-                ? question.map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i !== question.length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                : question}
-            </div>
-            <div className="diagnosis-options">
-              {options.map((option, i) => (
-                <label className="diagnosis-radio" key={i}>
-                  <input
-                    type="radio"
-                    name={`question-${index}`}
-                    value={option}
-                    checked={answers[index] === option}
-                    onChange={() => handleChange(index, option)}
-                    required
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
+    <div className={styles.container}>
+      <div className={styles.mainContent}>
+        <div className={styles.sidebar}>
+          <div className={styles.buttonContainer}>
+            {tests.map((test) => (
+              <button
+                key={test.key}
+                className={`${styles.categoryBtn} ${selectedTest === test.key ? styles.categoryBtnActive : ""}`}
+                onClick={() => setSelectedTest(test.key)}
+              >
+                <h3>{test.label}</h3>
+                <p>{test.description}</p>
+              </button>
+            ))}
           </div>
-        ))}
-        <button className="diagnosis-submit-btn" type="submit">
-          제출
-        </button>
-      </form>
+        </div>
+        <div className={styles.contentContainer}>
+          <div className={`${styles.content} ${styles.contentActive}`}>
+            {selectedTest && (
+              <>
+                <h2>
+                  {tests.find(t => t.key === selectedTest)?.label} 자가진단
+                </h2>
+                <p className={styles.contentDescription}>
+                  {tests.find(t => t.key === selectedTest)?.description} 관련 자가진단 문항입니다.
+                </p>
+                {loading ? (
+                  <div>로딩 중...</div>
+                ) : (
+                  <form onSubmit={handleSubmit}>
+                    <ul className={styles.postList}>
+                      {questions.map((q, idx) => (
+                        <li className={styles.postItem} key={idx}>
+                          <div className={styles.postTitle}>{q}</div>
+                          <div style={{ marginTop: "10px", marginBottom: "15px" }}>
+                            {choices.map(choice => (
+                              <label key={choice.value} style={{ marginRight: "15px" }}>
+                                <input
+                                  type="radio"
+                                  name={`question_${idx}`}
+                                  value={choice.value}
+                                  checked={answers[idx] === choice.value}
+                                  onChange={() => handleAnswerChange(idx, choice.value)}
+                                />
+                                {choice.label}
+                              </label>
+                            ))}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      type="submit"
+                      className={styles.actionBtn}
+                      style={{ marginTop: "20px" }}
+                    >
+                      제출
+                    </button>
+                  </form>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
