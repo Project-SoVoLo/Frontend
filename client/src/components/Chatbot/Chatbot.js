@@ -10,7 +10,7 @@ export default function Chatbot() {
   ]);
   const [loading, setLoading] = useState(false);
 
-  const sender = localStorage.getItem('userEmail')
+  const sender = localStorage.getItem('userEmail') || 'test123@gmail.com'
 
   const handleSend = async (text) => {
     const newMessages = [...messages, { from: "user", text }];

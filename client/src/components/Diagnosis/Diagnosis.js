@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
 import styles from './Diagnosis.module.css';
+import axios from "../../api/axios";
+
+const typeMeta = {
+  DEPRESSION: { label: "우울", description: "우울감, 무기력 등" },
+  ANXIETY: { label: "불안", description: "불안, 초조 등" },
+  EARLY_PSYCHOSIS: { label: "조기정신증", description: "정신증 초기 증상" },
+  BIPOLAR: { label: "조울증", description: "조울증 관련" },
+  STRESS: { label: "스트레스", description: "스트레스 관련" },
+  INSOMNIA: { label: "불면", description: "수면 장애" },
+  ALCOHOL: { label: "알코올중독", description: "알코올 사용 문제" },
+  DEVICE_ADDICTION: { label: "스마트기기 중독", description: "디지털 기기 사용" },
+};
 
 const choices = [
   { value: 1, label: "전혀 아니다" },
@@ -16,26 +28,46 @@ function Diagnosis() {
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/diagnosis/types")
-      .then(res => res.json())
-      .then(data => {
-        setTests(data);
-        if (data.length > 0) setSelectedTest(data[0].key);
-      });
-  }, []);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if (!selectedTest) return;
-    setLoading(true);
-    fetch(`http://localhost:8080/api/diagnosis/questions?type=${selectedTest}`)
-      .then(res => res.json())
-      .then(data => {
-        setQuestions(data);
-        setAnswers(Array(data.length).fill(null));
-        setLoading(false);
-      });
-  }, [selectedTest]);
+  axios.get("http://localhost:8080/api/diagnosis/types", {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+    .then(res => {
+      const data = res.data;
+      const mapped = data.map(type => ({
+        key: type,
+        label: typeMeta[type]?.label || type,
+        description: typeMeta[type]?.description || "",
+      }));
+      setTests(mapped);
+      if (mapped.length > 0) setSelectedTest(mapped[0].key);
+    })
+    .catch(err => {
+      alert("진단 유형 목록을 불러오지 못했습니다.");
+    });
+}, []);
+
+
+useEffect(() => {
+  if (!selectedTest) return;
+  setLoading(true);
+  axios.get(`http://localhost:8080/api/diagnosis/questions?type=${selectedTest}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+    .then(res => {
+      const data = res.data;
+      setQuestions(data);
+      setAnswers(Array(data.length).fill(null));
+      setLoading(false);
+    })
+    .catch(err => {
+      alert("문항을 불러오지 못했습니다.");
+      setLoading(false);
+    });
+}, [selectedTest]);
+
 
   const handleAnswerChange = (questionIdx, value) => {
     setAnswers(prev =>
@@ -49,8 +81,8 @@ function Diagnosis() {
       alert("모든 문항에 답변해 주세요.");
       return;
     }
-    // 결과 처리 로직 추가해야 함. API 연결 필요. 어디로 보낼것인가.
-    alert("자가진단이 제출되었습니다.\n(실제 결과 계산 및 안내는 추가 구현 필요)");
+    // 결과 제출 API 연동 필요!! 나중 수정 !!
+    alert("자가진단이 제출되었습니다.");
   };
 
   return (
@@ -86,8 +118,8 @@ function Diagnosis() {
                   <form onSubmit={handleSubmit}>
                     <ul className={styles.postList}>
                       {questions.map((q, idx) => (
-                        <li className={styles.postItem} key={idx}>
-                          <div className={styles.postTitle}>{q}</div>
+                        <li className={styles.postItem} key={q.questionId}>
+                          <div className={styles.postTitle}>{q.content}</div>
                           <div style={{ marginTop: "10px", marginBottom: "15px" }}>
                             {choices.map(choice => (
                               <label key={choice.value} style={{ marginRight: "15px" }}>
