@@ -16,7 +16,7 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5001/api/chat", {
+      const response = await axios.post("http://localhost:8080/api/chatbot/full", {
         message: text,
       });
       const data = response.data;
@@ -35,10 +35,6 @@ export default function Chatbot() {
       ]);
     }
     setLoading(false);
-
-    axios.post("http://localhost:8080/api/phq9/predict", { text })
-      .catch(() => { console.log("post 실패")});
-      //현재 토큰 지급관련 api 수정 필요한 상태 -> 월요일 회의 이후 수정 예정
   };
 
   return (
