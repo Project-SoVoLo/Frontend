@@ -18,6 +18,7 @@ function Login() {
       });
       console.log("로그인 성공:", response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userEmail', email);
       alert('로그인 성공!');
       // 메인 페이지로 이동
       navigate('/');
