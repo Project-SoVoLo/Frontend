@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import "./Chatbot.css";
-import axios from "axios";
+import axios from "../../api/axios";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
     { from: "bot", text: "첫번째 대화를 시작합니다." },
   ]);
   const [loading, setLoading] = useState(false);
+
+  const sender = localStorage.getItem('userEmail')
 
   const handleSend = async (text) => {
     const newMessages = [...messages, { from: "user", text }];
@@ -17,11 +19,12 @@ export default function Chatbot() {
 
     try {
       const response = await axios.post("http://localhost:8080/api/chatbot/full", {
-        message: text,
+        text,
+        sender
       });
       const data = response.data;
-      if (data.text) {
-        setMessages([...newMessages, { from: "bot", text: data.text }]);
+      if (data.response) {
+        setMessages([...newMessages, { from: "bot", text: data.response }]);
       } else {
         setMessages([
           ...newMessages,
