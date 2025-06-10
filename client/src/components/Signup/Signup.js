@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Signup.css";
-
 
 function Signup() {
   const nav = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    id: "",
+    email: "",
     password: "",
     password_confirm: "",
     name: "",
@@ -15,143 +14,167 @@ function Signup() {
     nickname: "",
     birth: "",
     phone: "",
-    email: "",
   });
 
-  const [idChecked, setIdChecked] = useState(false);
-  const checkIdDuplicate = () => {
+  const [emailChecked, setEmailChecked] = useState(false);
+
+  const checkEmailDuplicate = () => {
     const savedUser = sessionStorage.getItem("user");
-    const savedId = savedUser ? JSON.parse(savedUser).id : null;
-    if (formData.id === savedId) {
-      alert("이미 존재하는 아이디입니다.");
+    const savedEmail = savedUser ? JSON.parse(savedUser).email : null;
+    if (formData.email === savedEmail) {
+      alert("이미 존재하는 이메일입니다.");
+      setEmailChecked(false);
     } else {
-      alert("사용 가능한 아이디입니다.");
-      setIdChecked(true);
+      alert("사용 가능한 이메일입니다.");
+      setEmailChecked(true);
+
     }
   };
+
   const onChangeForm = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
 
-    if (name === "gender") {
-      setFormData({ ...formData, [name]: value }); // 하나만 선택 가능
-    } else {
-      setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-    // 아이디 변경되면 다시 체크해야 함
-    if (name === "id") {
-      setIdChecked(false);
+    if (name === "email") {
+      checkEmailDuplicate(false);
     }
   };
 
-  const onSubmitForm = (e) => {
+  const onSubmitForm = async (e) => {
     e.preventDefault();
 
-    const { id, password, password_check } = formData;
+    const { email, password, password_confirm } = formData;
 
-    if (!id) return alert("아이디를 입력해주세요");
-    if (!idChecked) return alert("아이디 중복 확인을 해주세요");
+    if (!email) return alert("아이디를 입력해주세요 (이메일형식)");
+    if (!emailChecked) return alert("아이디 중복 확인을 해주세요");
     if (!password) return alert("비밀번호를 입력해주세요");
-    if (!password_check) return alert("비밀번호 확인을 입력해주세요");
-    if (password !== password_check) return alert("입력한 비밀번호가 같지 않습니다.");
+    if (!password_confirm) return alert("비밀번호 확인을 입력해주세요");
+    if (password !== password_confirm) return alert("입력한 비밀번호가 같지 않습니다.");
 
-    sessionStorage.setItem("user", JSON.stringify(formData));
-    alert("회원가입 성공하였습니다!");
-    nav("/login");
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/users/register",
+        {
+          userEmail: formData.email,
+          password: formData.password,
+          userName: formData.name,
+          nickname: formData.nickname,
+          userBirth: parseInt(formData.birth),
+          userGender: formData.gender,
+          userPhone: formData.phone,
+        }
+      );
+
+      const { token, nextStep, userEmail, role, expiresAt } = response.data;
+
+      // JWT 토큰 저장
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("userEmail", userEmail);
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("expiresAt", expiresAt);
+
+      alert("회원가입 성공하였습니다!");
+      nav(nextStep || "/");
+    } catch (error) {
+      alert("회원가입 실패: " + (error.response?.data?.error || "알 수 없는 오류"));
+      const nextStep = error.response?.data?.nextStep || "/signup";
+      nav(nextStep);
+    }
   };
+
   return (
     <div className="signup-container">
       <form className="form-submit" onSubmit={onSubmitForm}>
         <div className="input-box">
-          <i className="icon user" />
           <input
-            className="id"
+            className="email"
+            name="email"
             type="text"
-            placeholder="아이디"
-            onChange={onChangeForm} />
-          <button type="button" className="idChecked" onClick={checkIdDuplicate} >
+            placeholder="이메일"
+            onChange={onChangeForm}
+          />
+          <button type="button" className="emailChecked" onClick={checkEmailDuplicate}>
             중복확인
           </button>
         </div>
         <div className="input-box">
-          <i className="icon lock" />
           <input
             className="password"
-            type={showPassword ? "text" : "password"}
+            name="password"
+            type="password"
             placeholder="비밀번호"
-            onSubmit={onChangeForm}
-          />
-          <i
-            className={`icon eye ${showPassword ? "" : "closed"}`}
-            onClick={() => setShowPassword(!showPassword)}
+            onChange={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon lock" />
           <input
-          type="password"
-            className="password_check"
+            className="password_confirm"
+            name="password_confirm"
+            type="password"
             placeholder="비밀번호확인"
-            onSubmit={onChangeForm}
+            onChange={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon email" />
-          <input
-
-            type="email"
-            placeholder="이메일주소"
-            onSubmit={onChangeForm} />
-        </div>
-        <div className="input-box">
-          <i className="icon user" />
           <input
             type="text"
+            name="name"
             placeholder="이름"
-            onSubmit={onChangeForm}
+            onChange={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon user" />
           <input
             type="text"
+            name="nickname"
             placeholder="닉네임"
-            onSubmit={onChangeForm}
+            onChange={onChangeForm}
           />
         </div>
         <div className="input-box">
-          <i className="icon calendar" />
           <input
             type="text"
-            placeholder="생년월일 8자리"
-            onSubmit={onChangeForm}
+            name="birth"
+            placeholder="생년월일 8자리 (예: 19991231)"
+            onChange={onChangeForm}
           />
         </div>
-        <div className="select-box">
-          <i className="icon antenna" />
-          <select>
-            <option>통신사 선택</option>
-            <option>SKT</option>
-            <option>KT</option>
-            <option>LG U+</option>
-          </select>
-        </div>
         <div className="input-box">
-          <i className="icon phone" />
           <input
             type="text"
+            name="phone"
             placeholder="휴대전화번호"
-            onSubmit={onChangeForm}
+            onChange={onChangeForm}
           />
         </div>
         <div className="radio-group">
-          <label><input type="radio" name="gender" /> 남자</label>
-          <label><input type="radio" name="gender" /> 여자</label>
-          <label><input type="radio" name="nationality" /> 내국인</label>
-          <label><input type="radio" name="nationality" /> 외국인</label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="M"
+              checked={formData.gender === "M"}
+              onChange={onChangeForm}
+            />
+            남자
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value="F"
+              checked={formData.gender === "F"}
+              onChange={onChangeForm}
+            />
+            여자
+          </label>
         </div>
         <div className="submit-button">
-          <button type="submit">회원가입</button>
+          <button id="register" type="submit">회원가입</button>
         </div>
       </form>
     </div>
