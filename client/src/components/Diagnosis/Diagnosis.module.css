@@ -130,10 +130,12 @@
 
 .postItem {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* 추가 또는 변경 */
+    gap: 8px;               /* 문항과 라디오 버튼 사이 간격 */
     padding: 15px 0;
     border-bottom: 1px solid #eee;
 }
+
 
 .postItem:last-child {
     border-bottom: none;
@@ -183,4 +185,26 @@
         flex-direction: column;
         gap: 5px;
     }
+}
+
+.choicesRow {
+    display: flex;
+    justify-content: space-between; /* 좌우로 골고루 분포 */
+    width: 100%;
+    gap: 8px;
+}
+
+.choiceLabel {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 6px; /* 라디오와 텍스트 간격 */
+}
+
+.submitRow {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
