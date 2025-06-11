@@ -41,6 +41,9 @@ export default function Chatbot() {
 
     try {
       const res = await axios.post(apiUrl, { text, sender });
+      // 이 줄을 추가해봐 (axios.post 바로 아래)
+      console.log("🧾 Rasa 응답:", res.data);
+
       const rasaResponses = res.data.response;
 
       // Rasa 응답이 배열일 경우 (대화연장 or metadata.action_name 포함 가능)
