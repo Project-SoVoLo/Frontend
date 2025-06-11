@@ -11,6 +11,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
     alert("로그아웃되었습니다.");
     navigate('/login'); 
   };

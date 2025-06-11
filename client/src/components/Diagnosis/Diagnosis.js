@@ -53,9 +53,10 @@ function Diagnosis() {
 useEffect(() => {
   if (!selectedTest) return;
   setLoading(true);
-  axios.get(`http://localhost:8080/api/diagnosis/questions?type=${selectedTest}`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
+  axios.get(`http://localhost:8080/api/diagnosis/questions/${selectedTest}`, {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
+
     .then(res => {
       const data = res.data;
       setQuestions(data);
