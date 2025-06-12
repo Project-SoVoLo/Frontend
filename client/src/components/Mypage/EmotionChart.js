@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { moodData } from './dummyData.js';
 import Chart from 'chart.js/auto';
+import './Mypage.css';
 
 function EmotionChart() {
   const canvasRef = useRef(null);
@@ -11,7 +12,6 @@ function EmotionChart() {
     if (!canvasRef.current) return;
     const ctx = canvasRef.current.getContext('2d');
 
-    // 이전 차트 인스턴스를 파괴
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
@@ -39,7 +39,6 @@ function EmotionChart() {
       },
     });
 
-    // cleanup 함수에서 차트 제거
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
@@ -49,8 +48,8 @@ function EmotionChart() {
   }, []);
 
   return (
-    <div className="tab-content active">
-      <canvas ref={canvasRef} width="600" height="300"></canvas>
+    <div className="tab-content-chart active">
+      <canvas className="emotion-chart" ref={canvasRef}></canvas>
     </div>
   );
 }

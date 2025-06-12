@@ -27,7 +27,6 @@ function Signup() {
     } else {
       alert("사용 가능한 이메일입니다.");
       setEmailChecked(true);
-
     }
   };
 
@@ -38,10 +37,6 @@ function Signup() {
       ...prev,
       [name]: value,
     }));
-
-    if (name === "email") {
-      checkEmailDuplicate(false);
-    }
   };
 
   const onSubmitForm = async (e) => {
