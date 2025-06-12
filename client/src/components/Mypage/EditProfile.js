@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Mypage.css';
 
 function EditProfile() {
@@ -18,22 +19,22 @@ function EditProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('/api/update-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) alert('정보가 성공적으로 변경되었습니다!');
-        else alert('변경 실패: ' + result.message);
+    axios.post('/api/users/correct', formData)
+      .then(res => {
+        if (res.data.success) {
+          alert('정보가 성공적으로 변경되었습니다!');
+        } else {
+          alert('변경 실패: ' + res.data.message);
+        }
       })
-      .catch(() => alert('서버 오류가 발생했습니다.'));
+      .catch(() => {
+        alert('서버 오류가 발생했습니다.');
+      });
   };
 
   return (
     <div className="tab-content active">
-      <form id="profileForm" onSubmit={handleSubmit}>
+      <form method="POST" id="profileForm" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">이름</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} />

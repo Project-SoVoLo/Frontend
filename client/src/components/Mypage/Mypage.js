@@ -5,6 +5,7 @@ import Counseling from './Counseling';
 import SelfTest from './SelfTest';
 import EmotionChart from './EmotionChart';
 import EditProfile from './EditProfile';
+import './Mypage.css';
 
 function MyPage() {
   const [searchParams] = useSearchParams();
@@ -30,12 +31,16 @@ function MyPage() {
 
   return (
     <div className="container">
-      <aside className="sidebar">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      </aside>
-      <main className="content">
-        {renderContent()}
-      </main>
+      <div className="main-container">
+        <div className="sidebar">
+          <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
+        <div className="content-container">
+          <div className="content active">
+          {renderContent()}
+        </div>
+        </div>
+      </div>
     </div>
   );
 }

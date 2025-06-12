@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Mypage.css';
+import './Detail.css';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
-import { format } from 'date-fns';
+import { format } from 'date-fns';  //npm install date-fns 필요
 
 function Counseling() {
   const nav = useNavigate();
@@ -12,14 +13,14 @@ function Counseling() {
   const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    if (!token) {
-      alert('로그인이 필요합니다.');
-      nav('/login');
-      return;
-    }
+    // if (!token) {
+    //   alert('로그인이 필요합니다.');
+    //   nav('/login');  // 로그인 페이지로 리디렉션
+    //   return;
+    // }
 
     axios.get('/api/mypage/chat-summaries', {
       headers: {
@@ -27,16 +28,11 @@ function Counseling() {
       }
     })
       .then(response => {
-        const res = response.data;
-        
-        const result = Array.isArray(res) ? res : [res];
-        console.log(data);
-        setData(result);
+        setData(response.data || []);
         setLoading(false);
       })
       .catch(error => {
         console.error('데이터 로드 실패:', error);
-        alert('상담 데이터를 불러오지 못했습니다.');
         setLoading(false);
       });
   }, [token, nav]);
@@ -73,7 +69,7 @@ function Counseling() {
             </tr>
             <tr>
               <td>감정</td>
-              <td>{detailItem.emotionKo || '알 수 없음'}</td>
+              <td>{detailItem.emotionKo}</td>
             </tr>
           </tbody>
         </table>
@@ -91,8 +87,8 @@ function Counseling() {
           <tr><th>요약</th><th>날짜</th></tr>
         </thead>
         <tbody>
-          {pageData.map((d, index) => (
-            <tr key={index} className="clickable-row" onClick={() => setDetailItem(d)}>
+          {pageData.map(d => (
+            <tr key={d.id} className="clickable-row" onClick={() => setDetailItem(d)}>
               <td>{d.summary}</td>
               <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
             </tr>
