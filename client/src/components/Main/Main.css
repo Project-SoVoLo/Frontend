@@ -62,11 +62,11 @@
     width: 100%;
   }
   
-  .icon img {
+  .main_icon img {
     max-width: 44px; /* 기본 아이콘 크기 */
     max-height: 44px;
     position: absolute;
-    top: 20%;
+    top: 12%;
     left: 39%;
   }
   
