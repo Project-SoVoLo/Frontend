@@ -4,7 +4,7 @@
 }
 
 .detail-table {
-  width: 60%;
+  width: 80%;
   min-width: 70vh;
   height: 45vh;
   max-height: 45vh;
@@ -37,20 +37,24 @@
 }
 
 /* 목록보기(뒤로가기) */
-.back-button {
+.back-list{
   position: absolute;
+  width: 80%;
   bottom: 0;
+  font-weight: bold;
+}
+
+.back-button {
   left: 50;
   padding: 6px 12px;
   background-color: #ffd46c;
   color: white;
-  margin: 20px;
+  cursor: pointer;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+  align-self: center;
 }
 
 .back-button:hover {
-  background-color: #c7c7c7;
+  background-color: #e0e0e0;
 }
