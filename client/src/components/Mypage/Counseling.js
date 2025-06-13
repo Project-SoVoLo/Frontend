@@ -11,16 +11,16 @@ function Counseling() {
   const [detailItem, setDetailItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
 
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    // if (!token) {
-    //   alert('로그인이 필요합니다.');
-    //   nav('/login');  // 로그인 페이지로 리디렉션
-    //   return;
-    // }
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      nav('/login');
+      return;
+    }
 
     axios.get('/api/mypage/chat-summaries', {
       headers: {
@@ -32,7 +32,7 @@ function Counseling() {
         setLoading(false);
       })
       .catch(error => {
-        console.error('데이터 로드 실패:', error);
+        console.error('상담요약 데이터 로드 실패:', error);
         setLoading(false);
       });
   }, [token, nav]);
@@ -44,7 +44,7 @@ function Counseling() {
   );
 
   if (loading) {
-    return <div className="tab-content active">상담 데이터를 불러오는 중입니다...</div>;
+    return <div className="tab-content active">상담요약 데이터를 불러오는 중입니다...</div>;
   }
 
   if (!loading && data.length === 0) {
@@ -52,12 +52,13 @@ function Counseling() {
   }
 
   if (detailItem) {
-    return (
-      <div className="tab-content active">
-        <p className="counseling-detail-date">
-          {format(new Date(detailItem.date), 'yyyy-MM-dd')}
-        </p>
-        <table className="counseling-detail-table">
+  return (
+    <div className="tab-content active">
+      <p className="detail-date">
+        {format(new Date(detailItem.date), 'yyyy-MM-dd')}
+      </p>
+      <div className='detail-table'>
+        <table className="detail-table">
           <tbody>
             <tr>
               <td>요약</td>
@@ -71,34 +72,43 @@ function Counseling() {
               <td>감정</td>
               <td>{detailItem.emotionKo}</td>
             </tr>
+            <tr>
+              <td>PHQ 점수</td>
+              <td>{detailItem.phqScore}</td>
+            </tr>
           </tbody>
         </table>
         <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
           ← 목록으로
         </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div className="tab-content active">
-      <table>
-        <thead>
-          <tr><th>요약</th><th>날짜</th></tr>
-        </thead>
-        <tbody>
-          {pageData.map(d => (
-            <tr key={d.id} className="clickable-row" onClick={() => setDetailItem(d)}>
-              <td>{d.summary}</td>
-              <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className='table-list'>
+        <table>
+          <thead>
+            <tr><th>요약</th><th>날짜</th></tr>
+          </thead>
+          <tbody>
+            {pageData.map((d, index) => (
+              <tr key={d.id ?? `row-${index}`} className="clickable-row" onClick={() => setDetailItem(d)}>
+                <td>{d.summary}</td>
+                <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
+              </tr>
+            ))}
+
+          </tbody>
+        </table>
+      </div>
       <div className="pagination">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
-            key={i}
+            key={`page-${i}`}
             className={currentPage === i + 1 ? 'active' : ''}
             onClick={() => setCurrentPage(i + 1)}
           >

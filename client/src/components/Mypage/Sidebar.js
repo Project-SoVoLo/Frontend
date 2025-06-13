@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import './Mypage.css';
 
 const tabs = [
-  { key: 'counseling', label: '상담내역', description:'챗봇과의 상담내용요약' },
-  { key: 'self_test', label: '자가진단내역', description:'자가 진단 확인'},
-  { key: 'emotion_chart', label: '호전상태', description:'감정 점수를 나타낸 그래프' },
-  { key: 'edit_profile', label: '개인정보수정'},
+  { key: 'counseling', label: '상담내역', description: '챗봇과의 상담내용요약' },
+  { key: 'self_test', label: '자가진단내역', description: '자가 진단 점수 확인'},
+  { key: 'emotion_chart', label: '호전상태', description: '감정 점수를 나타낸 그래프' },
+  { key: 'edit_profile', label: '개인정보수정', description: '회원정보수정'},
 ];
 
 function Sidebar({ activeTab, setActiveTab }) {

@@ -5,8 +5,9 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1400px;        
-    min-height: 100vh;
+    max-width: 1400px;      
+    min-width: 1200px;  
+    min-height: 75vh;
     margin: 0 auto;
     padding: 40px 24px;
     box-sizing: border-box;
@@ -28,7 +29,7 @@ body {
 .button-container {
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: 15px;
 }
 
 .sidebar-item {
@@ -42,11 +43,12 @@ body {
 }
 
 .sidebar-item h3 {
-    font-size: 25px;
+    font-size: 18px;
+    margin-bottom: 5px;
 }
 
 .sidebar-item p {
-    font-size: 16px;
+    font-size: 14px;
     color: #666;
 }
 
@@ -77,13 +79,13 @@ body {
 
 .content.active {
     display: block;
+    max-height: 50vh;
 }
 
 .tab-content {
   display: none;
   flex-grow: 1;
   position: relative;
-  margin: 30px 0;
 }
 
 .tab-content.active {
@@ -93,21 +95,17 @@ body {
   padding-bottom: 100px;
 }
 
-.tab-content table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 50px;
-  font-size: 1.1em;
-}
-
 .tab-content th,
 .tab-content td {
   padding: 10px;
   text-align: center;
+  width: 50vh;
+   border-bottom: #666;
 }
 
 .tab-content tr {
-  height: 3vh;
+  height: 2vh;
+   border-bottom: 1px #666;
 }
 
 .tab-content tr.clickable-row:hover {
@@ -116,35 +114,30 @@ body {
   border-radius: 50px;
 }
 
-.back-button {
-  position: absolute;
-  bottom: 0;
-  left: 50;
-  padding: 6px 12px;
-  background-color: #5c9dff;
-  color: white;
-  margin: 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+.table-list {
+  height: 45vh;
+  max-height: 45vh;
+  text-align: center;
 }
 
-.back-button:hover {
-  background-color: #c7c7c7;
+.table-list table {
+  width: 90%;
+  border-collapse: collapse;
+  margin-top: 50px;
+  font-size: 1.1em;
 }
 
 /* 페이지네이션 영역 */
 .pagination {
   position: absolute;
   bottom: 0;
-  left: 0;
   width: 100%;
   text-align: center;
   padding: 10px 0;
   border-top: 1px solid #ccc;
   background-color: white;
-  margin-top: auto;
+  position: absolute;
+  align-self: center;
 }
 
 .pagination button {
@@ -166,31 +159,21 @@ body {
 }
 
 .diagnosis-list{
-    padding:20px 0;
+  padding:20px 0;
 }
 
 
 /* 호전상태 */
-.tab-content-chart {
-  display: none;
-  flex-grow: 1;
-  position: relative;
-  margin: 100px 0;
-}
-
-.tab-content-chart.active {
-  display: block;
-  text-align: center;
-}
-
 .emotion-chart {
-    padding: 20px;
+  height: 50vh;
+  max-height: 50vh;
+  margin: 60px 30px;
 }
 
 /* 개인정보 */
 .form-group {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
