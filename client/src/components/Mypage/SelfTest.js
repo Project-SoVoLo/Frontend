@@ -26,15 +26,16 @@ function SelfTest() {
       headers: {
         Authorization: `Bearer ${token}`,
       }
-    })
-      .then(response => {
-        setData(response.data || []);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('진단 결과 로드 실패:', error);
-        setLoading(false);
-      });
+    }).then(response => {
+      const sortedData = (response.data || []).sort(
+        (a, b) => new Date(b.diagnosisDate) - new Date(a.diagnosisDate)
+      );
+      setData(sortedData);
+      setLoading(false);
+    }).catch(error => {
+      console.error('진단 결과 로드 실패:', error);
+      setLoading(false);
+    });
   }, [token, nav]);
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -58,22 +59,24 @@ function SelfTest() {
           {format(new Date(detailItem.diagnosisDate), 'yyyy-MM-dd')}
         </p>
         <div className="detail-table">
-        <table className="detail-table">
-          <tbody>
-            <tr>
-              <td>진단 유형</td>
-              <td>{detailItem.diagnosisType}</td>
-            </tr>
-            <tr>
-              <td>점수</td>
-              <td>{detailItem.diagnosisScore}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
-          ← 목록으로
-        </button>
-      </div>
+          <table className="detail-table">
+            <tbody>
+              <tr>
+                <td>진단 유형</td>
+                <td>{detailItem.diagnosisType}</td>
+              </tr>
+              <tr>
+                <td>점수</td>
+                <td>{detailItem.diagnosisScore}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="back-list">
+            <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
+              ← 목록으로
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

@@ -28,7 +28,10 @@ function Counseling() {
       }
     })
       .then(response => {
-        setData(response.data || []);
+        const sortedData = (response.data || []).sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setData(sortedData);
         setLoading(false);
       })
       .catch(error => {
@@ -52,39 +55,41 @@ function Counseling() {
   }
 
   if (detailItem) {
-  return (
-    <div className="tab-content active">
-      <p className="detail-date">
-        {format(new Date(detailItem.date), 'yyyy-MM-dd')}
-      </p>
-      <div className='detail-table'>
-        <table className="detail-table">
-          <tbody>
-            <tr>
-              <td>요약</td>
-              <td>{detailItem.summary}</td>
-            </tr>
-            <tr>
-              <td>피드백</td>
-              <td>{detailItem.feedback}</td>
-            </tr>
-            <tr>
-              <td>감정</td>
-              <td>{detailItem.emotionKo}</td>
-            </tr>
-            <tr>
-              <td>PHQ 점수</td>
-              <td>{detailItem.phqScore}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
-          ← 목록으로
-        </button>
+    return (
+      <div className="tab-content active">
+        <p className="detail-date">
+          {format(new Date(detailItem.date), 'yyyy-MM-dd')}
+        </p>
+        <div className='detail-table'>
+          <table className="detail-table">
+            <tbody>
+              <tr>
+                <td>요약</td>
+                <td>{detailItem.summary}</td>
+              </tr>
+              <tr>
+                <td>피드백</td>
+                <td>{detailItem.feedback}</td>
+              </tr>
+              <tr>
+                <td>감정</td>
+                <td>{detailItem.emotionKo}</td>
+              </tr>
+              <tr>
+                <td>PHQ 점수</td>
+                <td>{detailItem.phqScore}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="back-list">
+            <button className="back-button" type="button" onClick={() => setDetailItem(null)}>
+              ← 목록으로
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 
   return (

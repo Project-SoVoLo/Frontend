@@ -34,7 +34,7 @@ body {
 
 .sidebar-item {
     padding: 20px;
-    text-align: center;
+    text-align: left;
     background-color: white;
     border: none;
     border-radius: 15px;
@@ -78,8 +78,8 @@ body {
 }
 
 .content.active {
-    display: block;
-    max-height: 50vh;
+  display: block;
+  max-height: 50vh;
 }
 
 .tab-content {
@@ -95,33 +95,34 @@ body {
   padding-bottom: 100px;
 }
 
-.tab-content th,
-.tab-content td {
+.table-list th,
+.table-list td {
   padding: 10px;
   text-align: center;
-  width: 50vh;
-   border-bottom: #666;
+  width: 6vh;
+  border-bottom: 1px solid #dedddd;
 }
 
-.tab-content tr {
+.table-list tr {
   height: 2vh;
-   border-bottom: 1px #666;
 }
 
-.tab-content tr.clickable-row:hover {
+.table-list tr.clickable-row:hover {
   background-color: #fef3c7;
   cursor: pointer;
-  border-radius: 50px;
 }
 
 .table-list {
+  width: 80%;
+  min-width: 80vh;
   height: 45vh;
   max-height: 45vh;
   text-align: center;
+  margin: 0 auto;
 }
 
 .table-list table {
-  width: 90%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: 50px;
   font-size: 1.1em;
@@ -133,10 +134,9 @@ body {
   bottom: 0;
   width: 100%;
   text-align: center;
-  padding: 10px 0;
-  border-top: 1px solid #ccc;
+  padding: 0;
+  margin: 0;
   background-color: white;
-  position: absolute;
   align-self: center;
 }
 

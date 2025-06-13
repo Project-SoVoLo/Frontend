@@ -12,10 +12,28 @@ function EmotionChart() {
     axios.get('/api/mypage/chat-summaries')
       .then(res => {
         console.log('API 응답 데이터:', res.data);
-        const sorted = [...res.data]
-          .filter(item => item.phqScore !== null && item.date)
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
-        setRecords(sorted);
+        const filtered = res.data.filter(item => item.phqScore !== null && item.date);
+
+        // 날짜별 감정점수 평균 계산
+        const grouped = filtered.reduce((acc, item) => {
+          const date = item.date.split('T')[0];
+          if (!acc[date]) {
+            acc[date] = { total: 0, count: 0 };
+          }
+          acc[date].total += item.phqScore;
+          acc[date].count += 1;
+          return acc;
+        }, {});
+
+        const averaged = Object.entries(grouped).map(([date, { total, count }]) => ({
+          date,
+          avgScore: total / count,
+        }));
+
+        const sorted = averaged.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const last10 = sorted.slice(-10);
+
+        setRecords(last10);
       })
       .catch(err => {
         console.error('상담 요약 API 오류:', err);
@@ -31,13 +49,14 @@ function EmotionChart() {
       chartInstance.current.destroy();
     }
 
-    const labels = records.length > 0
-      ? records.map(d => d.date)
-      : [''];
+    const labels = records.map(d => {
+      const date = new Date(d.date);
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${month}/${day}`;
+    });
 
-    const data = records.length > 0
-      ? records.map(d => d.phqScore)
-      : [0];
+    const data = records.map(d => d.avgScore);
 
     chartInstance.current = new Chart(ctx, {
       type: 'line',
@@ -55,6 +74,14 @@ function EmotionChart() {
       options: {
         responsive: true,
         animation: false,
+        layout: {
+          padding: {
+            left: 20,
+            right: 10,
+            top: 10,
+            bottom: 10
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
@@ -66,6 +93,7 @@ function EmotionChart() {
             }
           },
           x: {
+            offset: true,
             title: {
               display: true,
               text: '상담 날짜',
