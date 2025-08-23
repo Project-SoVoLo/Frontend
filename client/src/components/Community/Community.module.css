@@ -18,8 +18,6 @@
     min-width: 220px;
 }
 
-
-
 .subtitle {
     font-size: 14px;
     color: #666;
@@ -76,13 +74,8 @@
     min-width: 0;
 }
 
-.content {
-    display: none;
-}
-
-.contentActive {
-    display: block;
-}
+.content { display: none; }
+.contentActive { display: block; }
 
 .content h2 {
     margin-bottom: 10px;
@@ -120,13 +113,9 @@
     transition: all 0.3s ease;
 }
 
-.actionBtn:hover {
-    background-color: #238a7d;
-}
+.actionBtn:hover { background-color: #238a7d; }
 
-.postList {
-    list-style: none;
-}
+.postList { list-style: none; }
 
 .postItem {
     display: flex;
@@ -134,53 +123,125 @@
     padding: 15px 0;
     border-bottom: 1px solid #eee;
 }
+.postItem:last-child { border-bottom: none; }
 
-.postItem:last-child {
-    border-bottom: none;
-}
-
-.postTitle {
-    font-size: 16px;
-    color: #333;
-}
-
-.postDate {
-    font-size: 14px;
-    color: #999;
-}
+.postTitle { font-size: 16px; color: #333; }
+.postDate { font-size: 14px; color: #999; }
 
 @media (max-width: 1024px) {
-    .container {
-        max-width: 100%;
-        padding: 32px 8px;
-    }
-    .mainContent {
-        gap: 16px;
-    }
-    .sidebar {
-        flex: 0 0 180px;
-        min-width: 120px;
-    }
-    .contentContainer {
-        padding: 20px 10px;
-    }
+    .container { max-width: 100%; padding: 32px 8px; }
+    .mainContent { gap: 16px; }
+    .sidebar { flex: 0 0 180px; min-width: 120px; }
+    .contentContainer { padding: 20px 10px; }
 }
 
 @media (max-width: 768px) {
-    .mainContent {
-        flex-direction: column;
-        gap: 0;
-    }
-    .sidebar {
-        flex: auto;
-        min-width: 0;
-        margin-bottom: 20px;
-    }
-    .contentContainer {
-        padding: 16px 4px;
-    }
-    .postItem {
-        flex-direction: column;
-        gap: 5px;
-    }
+    .mainContent { flex-direction: column; gap: 0; }
+    .sidebar { flex: auto; min-width: 0; margin-bottom: 20px; }
+    .contentContainer { padding: 16px 4px; }
+    .postItem { flex-direction: column; gap: 5px; }
+}
+
+/* ========== CardNews ========== */
+.wrapper { display: grid; gap: 16px; }
+
+.header h2 { margin: 0; }
+.header p { margin: 4px 0 0; color: #666; }
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.card {
+  grid-column: span 4;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0,0,0,.12); }
+
+.thumbWrap { aspect-ratio: 16 / 9; background: #f2f2f2; }
+.thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.body { padding: 12px 14px 16px; }
+.metaRow { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.title { margin: 0; font-size: 18px; font-weight: 700; color: #333; }
+.date { font-size: 12px; color: #777; }
+.desc { margin: 8px 0 0; color: #333; line-height: 1.5; }
+
+@media (max-width: 1024px) { .card { grid-column: span 6; } }
+@media (max-width: 640px)  {
+  .grid { gap: 12px; }
+  .card { grid-column: span 12; }
+  .title { font-size: 16px; }
+  .desc { font-size: 14px; }
+}
+
+/* ===== CardNews Modal ===== */
+.modalBackdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: grid; place-items: center;
+  z-index: 1000;
+}
+.modal{
+  width: min(960px, 92vw);
+  max-height: 92vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  position: relative;
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+}
+@media (max-width: 768px){ .modal{ grid-template-columns: 1fr; } }
+
+.modalImg{
+  width: 100%; height: 100%;
+  object-fit: cover; background: #eee;
+}
+
+/* 상세 영역을 세로 레이아웃로 만들어 footer가 아래에 고정되도록 */
+.modalBody{
+  padding: 18px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.modalTitle{ margin: 0 0 4px; font-size: 22px; }
+.modalDate{ color:#777; font-size: 13px; }
+.modalList{ margin: 12px 0 0; padding-left: 18px; line-height: 1.55; }
+
+/* 상세 영역 하단 좌우 네비게이션 */
+.modalFooter{
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+}
+.navBtn{
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #222;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+.navBtn:active { transform: translateY(1px); }
+
+.closeBtn{
+  position:absolute; right:10px; top:10px; width:36px; height:36px;
+  border:none; border-radius:50%; background:rgba(0,0,0,.6); color:#fff;
+  font-size:22px; cursor:pointer;
 }

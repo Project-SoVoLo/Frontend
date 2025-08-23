@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import styles from './Community.module.css';
+import { useSearchParams, useNavigate } from "react-router-dom";
+import styles from "./Community.module.css";
+
+import CardNews from "./CardNews";
 
 function Community() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const defaultTab = searchParams.get('tab') || 'notice';
+  const defaultTab = searchParams.get("tab") || "notice";
   const [category, setCategory] = useState(defaultTab);
 
   useEffect(() => {
-    const newTab = searchParams.get('tab');
+    const newTab = searchParams.get("tab");
     if (newTab && newTab !== category) {
       setCategory(newTab);
     }
@@ -32,25 +34,13 @@ function Community() {
     { title: "웹사이트 디자인 개선 제안", date: "2025.03.27" },
     { title: "새로운 서비스 아이디어", date: "2025.03.22" },
   ];
-  const cardNewsPosts = [
-    { title: "건강한 마음 가꾸기", date: "2025.04.15" },
-    { title: "스트레스 관리 팁", date: "2025.04.10" },
-    { title: "일상 속 소소한 행복", date: "2025.04.05" },
-  ];
 
   const tabs = [
     { key: "notice", label: "공지사항", description: "공지사항 소개글" },
     { key: "board", label: "커뮤니티", description: "커뮤니티 소개글" },
     { key: "suggestion", label: "건의사항", description: "건의사항 소개글" },
-    { key: "cardNews", label: "카드뉴스", description: "카드뉴스 소개글" },
+    { key: "cardNews", label: "카드뉴스", description: "심리 건강에 도움이 되는 카드뉴스를 확인하세요" },
   ];
-
-  const currentPosts = {
-    notice: noticePosts,
-    board: boardPosts,
-    suggestion: suggestionPosts,
-    cardNews: cardNewsPosts,
-  }[category];
 
   const currentDescription = {
     notice: "공지사항을 확인하세요",
@@ -66,10 +56,17 @@ function Community() {
     cardNews: { category: "카드뉴스", since: "2025" },
   }[category];
 
+  const listPosts = {
+    notice: noticePosts,
+    board: boardPosts,
+    suggestion: suggestionPosts,
+  }[category];
+
   return (
     <div className={styles.container}>
       <div className={styles.mainContent}>
-        <div className={styles.sidebar}>
+        {}
+        <aside className={styles.sidebar}>
           <div className={styles.buttonContainer}>
             {tabs.map((tab) => (
               <button
@@ -85,24 +82,26 @@ function Community() {
               </button>
             ))}
           </div>
-        </div>
-        <div className={styles.contentContainer}>
+        </aside>
+
+        {}
+        <section className={styles.contentContainer}>
           <div className={`${styles.content} ${styles.contentActive}`}>
-            <h2>{tabs.find(t => t.key === category)?.label}</h2>
+            <h2>{tabs.find((t) => t.key === category)?.label}</h2>
             <p className={styles.contentDescription}>{currentDescription}</p>
             <div className={styles.categoryInfo}>
               <p>Category: {currentCategoryInfo.category}</p>
               <p>Since: {currentCategoryInfo.since}</p>
             </div>
-            <div className={styles.buttonGroup}>
-              <button className={styles.actionBtn}>글쓰기</button>
-              {category === "cardNews" ? (
-                <>
-                  <button className={styles.actionBtn}>인스타</button>
-                  <button className={styles.actionBtn}>유튜브</button>
-                </>
-              ) : (
-                <>
+
+            {}
+            {category === "cardNews" ? (
+              <CardNews />
+            ) : (
+              <>
+                {}
+                <div className={styles.buttonGroup}>
+                  <button className={styles.actionBtn}>글쓰기</button>
                   <button className={styles.actionBtn}>블로그</button>
                   {category === "board" && (
                     <>
@@ -110,19 +109,20 @@ function Community() {
                       <button className={styles.actionBtn}>유튜브</button>
                     </>
                   )}
-                </>
-              )}
-            </div>
-            <ul className={styles.postList}>
-              {currentPosts.map((post, idx) => (
-                <li className={styles.postItem} key={idx}>
-                  <span className={styles.postTitle}>{post.title}</span>
-                  <span className={styles.postDate}>{post.date}</span>
-                </li>
-              ))}
-            </ul>
+                </div>
+
+                <ul className={styles.postList}>
+                  {listPosts?.map((post, idx) => (
+                    <li className={styles.postItem} key={idx}>
+                      <span className={styles.postTitle}>{post.title}</span>
+                      <span className={styles.postDate}>{post.date}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
