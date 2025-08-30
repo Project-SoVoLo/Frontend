@@ -35,7 +35,7 @@ function Navbar() {
     ],
     [
       { text: "명상", to: "/hospital_information" },
-      { text: "치료센터/병원위치", to: "/location_and_pharmacies" },
+      { text: "치료센터/병원위치", to: "/location" },
     ],
     [
       { text: "공지사항", to: "/community?tab=notice" },
@@ -47,7 +47,8 @@ function Navbar() {
       { text: "챗봇 상담 내역 확인", to: "/mypage?tab=counseling" },
       { text: "자가진단 내역 확인", to: "/mypage?tab=self_test" },
       { text: "호전상태", to: "/mypage?tab=emotion_chart" },
-      { text: "개인정보 수정", to: "/mypage?tab=edit_profile" },
+      { text: "개인정보수정", to: "/mypage?tab=edit_profile" },
+      { text: "북마크", to: "/mypage?tab=book_mark" },
     ],
     token
       ? [

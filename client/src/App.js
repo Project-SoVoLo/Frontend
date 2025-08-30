@@ -14,7 +14,9 @@ import SelfTest from "./components/Mypage/SelfTest.js";
 import EmotionChart from "./components/Mypage/EmotionChart.js";
 import EditProfile from "./components/Mypage/EditProfile.js";
 import LoginExtraInfo from "./components/LoginExtraInfo/LoginExtraInfo.js";
-import KakaoCallback from "./components/Login/KaKaoCallback.js";  
+import KakaoCallback from "./components/Login/KaKaoCallback.js";
+import Location from "./components/Location/Location.js";
+import BookmarkList from "./components/Mypage/BookMark.js";
 
 function App() {
   return (
@@ -35,7 +37,9 @@ function App() {
             <Route path="/login" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/login-extra-info" element={<LoginExtraInfo/>}/>
-             <Route path="/kakao/callback" element={<KakaoCallback />} />
+            <Route path="/kakao/callback" element={<KakaoCallback />} />
+            <Route path="/location" element={<Location />} />
+            <Route path="/book_mark" element={<BookmarkList />} />
           </Routes>
         </main>
         <Footer />

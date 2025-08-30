@@ -5,6 +5,7 @@ import Counseling from './Counseling';
 import SelfTest from './SelfTest';
 import EmotionChart from './EmotionChart';
 import EditProfile from './EditProfile';
+import BookmarkList from './BookMark';
 import './Mypage.css';
 
 function MyPage() {
@@ -25,6 +26,7 @@ function MyPage() {
       case 'self_test': return <SelfTest />;
       case 'emotion_chart': return <EmotionChart />;
       case 'edit_profile': return <EditProfile />;
+      case 'book_mark': return <BookmarkList />
       default: return null;
     }
   };
