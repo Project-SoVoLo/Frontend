@@ -1,0 +1,3 @@
+# Python venv, cache
+flask-server/venv/
+**/__pycache__/
