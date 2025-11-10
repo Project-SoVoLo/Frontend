@@ -18,8 +18,6 @@
     min-width: 220px;
 }
 
-
-
 .subtitle {
     font-size: 14px;
     color: #666;
@@ -33,7 +31,7 @@
 }
 
 .categoryBtn {
-    padding: 20px;
+    padding: 35px;
     text-align: left;
     background-color: white;
     border: none;
@@ -74,31 +72,36 @@
     padding: 32px 24px;
     position: relative;
     min-width: 0;
-}
+
+    /* display: flex; /* 자식 요소(.contentActive)가 높이를 100% 가질 수 있게 
+    min-height: 600px;*/
+} 
 
 .content {
     display: none;
 }
 
 .contentActive {
-    display: block;
+    display: flex;        
+    flex-direction: column;
+    width: 100%;
 }
 
 .content h2 {
-    margin-bottom: 10px;
+    margin: 0 0 20px 40px;
     font-size: 24px;
     color: #333;
 }
 
 .contentDescription {
     color: #666;
-    margin-bottom: 15px;
+    margin: 0 0 20px 50px;
 }
 
 .categoryInfo {
     display: flex;
     gap: 20px;
-    margin-bottom: 20px;
+    margin: 0 0 20px 50px;
     color: #777;
     font-size: 14px;
 }
@@ -106,7 +109,7 @@
 .buttonGroup {
     display: flex;
     gap: 10px;
-    margin-bottom: 30px;
+    margin: 0 0 20px 50px;
     flex-wrap: wrap;
 }
 
@@ -126,6 +129,8 @@
 
 .postList {
     list-style: none;
+
+    flex-grow: 1;
 }
 
 .postItem {
@@ -183,4 +188,371 @@
         flex-direction: column;
         gap: 5px;
     }
+}
+
+/* 글쓰기 폼 그룹 */
+.formGroup {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #ffd46c;
+  outline: none;
+}
+
+.formGroup textarea {
+  min-height: 200px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.error {
+  color: #d93025; 
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.submitBtn {
+  padding: 10px 24px;
+  margin: 0 10px;
+  background-color: #ffd46c;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.submitBtn:hover {
+  background-color: #ffc84a;
+}
+
+.cancelBtn {
+  padding: 10px 24px;
+  background-color: #f1f3f5;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.cancelBtn:hover {
+  background-color: #e9ecef;
+}
+
+.deleteBtn {
+  padding: 10px 24px;
+  margin: 0 10px;
+  background-color: #ffd46c;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.deleteBtn:hover {
+  background-color: #d93025;
+  color: white;
+}
+
+.deleteBtn:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  border-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.postItemClickable {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.postItemClickable:hover {
+  background-color: #f8f9fa;
+}
+
+.postTitle{
+    padding: 5px;
+    margin: 0 20px;
+}
+.postDate{
+    padding: 5px;
+    margin: 0 20px;
+}
+
+
+/* 상세보기 페이지 */
+.detailHeader {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.detailTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.detailMeta {
+  font-size: 14px;
+  color: #888;
+}
+
+.detailMeta span {
+  margin-right: 15px;
+}
+
+.detailContent {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.7;
+  min-height: 200px;
+  padding-bottom: 30px;
+}
+
+/* 건의사항 상세보기 */
+.divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 30px 0;
+}
+
+.commentSection {
+  width: 100%;
+}
+
+.commentTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.commentList {
+  margin-bottom: 20px;
+}
+
+.commentItem {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.commentItem strong {
+  font-size: 15px;
+  color: #000;
+}
+
+.commentItem p {
+  font-size: 14px;
+  color: #444;
+  margin-top: 5px;
+  margin-bottom: 8px;
+}
+
+.commentDate {
+  font-size: 12px;
+  color: #888;
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commentTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.commentTextarea:focus {
+  border-color: #ffd46c;
+  outline: none;
+}
+
+.commentForm .submitBtn {
+  align-self: flex-end;
+  padding: 8px 20px;
+  font-size: 15px;
+}
+
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.pageItem {
+  margin: 0 5px;
+}
+
+.pageLink {
+  display: block;
+  padding: 8px 12px;
+  min-width: 32px;
+  box-sizing: border-box;
+  text-align: center;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pageLink:hover {
+  background-color: #f4f4f4;
+}
+
+.pageItemActive .pageLink {
+  background-color: #ffd46c;
+  color: white;
+  border-color: #ffd46c;
+}
+
+
+/* CardDetail.js Image Styles   */
+.cardImageContainer {
+  display: flex;
+  flex-direction: column; /* 이미지를 세로로 나열 */
+  gap: 15px; /* 이미지 사이 간격 */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.cardImage {
+  width: 100%;
+  max-width: 700px; /* 이미지 최대 너비 (조절 가능) */
+  height: auto; /* 비율 유지 */
+  border-radius: 8px; /* 이미지 모서리 */
+  border: 1px solid #eee;
+  align-self: center; /* 이미지 중앙 정렬 */
+}
+
+/* 좋아요/북마크 버튼 감싸는 영역 (공용) */
+.detailActions {
+  margin-bottom: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+}
+
+/* ... (기존 .likeButton, .liked 스타일) ... */
+
+
+/* ============================ */
+/* CardDetail.js Bookmark Button */
+/* ============================ */
+
+/* 기본 북마크 버튼 */
+.bookmarkButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #555;
+  transition: all 0.3s ease;
+}
+
+.bookmarkButton:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+
+/* 북마크 누른 상태 (활성화 색상) */
+.bookmarkButton.bookmarked {
+  background-color: #ffd46c; /* 활성 탭 색상 (노란색) */
+  color: white;
+  border-color: #ffd46c;
+}
+.bookmarkButton.bookmarked:hover:not(:disabled) {
+  background-color: #fff;
+  border-color: #ffc84a;
+}
+
+/* 비활성화 시 */
+.bookmarkButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* 아이콘 버튼 컨테이너 (이전 bookmarkButton 대체) */
+.bookmarkIconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0; /* 내부 패딩 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.bookmarkIconButton:hover:not(:disabled) {
+  transform: scale(1.1); /* 호버 시 약간 확대 */
+}
+
+/* 북마크 아이콘 이미지 자체 스타일 */
+.bookmarkIcon {
+  width: 32px; /* 아이콘 크기 (조절 가능) */
+  height: 32px;
+  display: block; /* 불필요한 공백 제거 */
+}
+
+.bookmarkIconButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
