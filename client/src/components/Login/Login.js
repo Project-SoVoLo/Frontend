@@ -16,9 +16,21 @@ function Login() {
         userEmail: email,
         password: password
       });
+
+      console.log("로그인 API 실제 응답:", JSON.stringify(response.data));
       console.log("로그인 성공:", response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userEmail', email);
+
+      if (response.data.userName) {
+         localStorage.setItem('userName', response.data.userName);
+      } else if (response.data.userInfo && response.data.userInfo.userName) {
+         localStorage.setItem('userName', response.data.userInfo.userName);
+      }
+
+      if (response.data.role) {
+        localStorage.setItem('role', response.data.role); // 예: "USER" 또는 "ADMIN"
+      }
       alert('로그인 성공!');
       // 메인 페이지로 이동
       navigate('/');

@@ -32,7 +32,6 @@ function Counseling() {
       }
     })
       .then(response => {
-
         console.log("상담데이터: ", response.data);
 
         const sortedData = (response.data || []).sort(
@@ -77,11 +76,11 @@ function Counseling() {
             <tbody>
               <tr>
                 <td>요약</td>
-                <td>{detailItem.summary}</td>
+                <td>{detailItem.summary || '요약 정보가 없습니다.'}</td>
               </tr>
               <tr>
                 <td>피드백</td>
-                <td>{detailItem.feedback}</td>
+                <td>{detailItem.feedback || '피드백 정보가 없습니다.'}</td>
               </tr>
               <tr>
                 <td>감정</td>
@@ -102,6 +101,9 @@ function Counseling() {
       </div>
     );
   }
+  console.log("선택된 상세 아이템:", detailItem);
+  
+
 
   return (
     <div className="tab-content active">
@@ -111,16 +113,24 @@ function Counseling() {
             <tr><th>요약</th><th>날짜</th></tr>
           </thead>
           <tbody>
-            {pageData.map((d, index) => (
-              <tr
-                key={d.id ?? `row-${index}`}
-                className="clickable-row"
-                onClick={() => setDetailItem(d)}
-              >
-                <td>{d.summary}</td>
-                <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
-              </tr>
-            ))}
+            {pageData.map((d, index) => {
+              const globalIndex = (currentPage - 1) * itemsPerPage + index;
+              
+              const totalCount = data.length;
+              
+              const recordNumber = totalCount - globalIndex;
+
+              return (
+                <tr
+                  key={d.id ?? `row-${index}`}
+                  className="clickable-row"
+                  onClick={() => setDetailItem(d)}
+                >
+                  <td>{`${recordNumber}번째 상담기록`}</td>
+                  <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

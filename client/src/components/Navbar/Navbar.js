@@ -48,7 +48,7 @@ function Navbar() {
       { text: "자가진단 내역 확인", to: "/mypage?tab=self_test" },
       { text: "호전상태", to: "/mypage?tab=emotion_chart" },
       { text: "개인정보수정", to: "/mypage?tab=edit_profile" },
-      { text: "북마크", to: "/mypage?tab=book_mark" },
+      { text: "프로필", to: "/mypage?tab=profile" },
     ],
     token
       ? [

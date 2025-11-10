@@ -7,7 +7,7 @@ const tabs = [
   { key: 'self_test', label: '자가진단내역', description: '자가 진단 점수 확인'},
   { key: 'emotion_chart', label: '호전상태', description: '감정 점수를 나타낸 그래프' },
   { key: 'edit_profile', label: '개인정보수정', description: '회원정보수정'},
-  { key: 'book_mark', label: '북마크', description: '내 북마크'},
+  { key: 'profile', label: '프로필', description: '나의 활동 조회'},
 ];
 
 function Sidebar({ activeTab, setActiveTab }) {

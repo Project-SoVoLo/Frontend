@@ -1,6 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styles from './Community.module.css';
+import axios from "../../api/axios";
+
+const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
+  const pageNumbers = [];
+
+  for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  // 게시글이 1페이지 이하면 페이지네이션을 숨김
+  if (pageNumbers.length <= 1) {
+    return null;
+  }
+
+  return (
+    <nav>
+      <ul className={styles.pagination}>
+        {pageNumbers.map(number => (
+          <li 
+            key={number} 
+            className={`${styles.pageItem} ${currentPage === number ? styles.pageItemActive : ''}`}
+          >
+            <a 
+              onClick={() => paginate(number)} 
+              href="#!" // href="#"는 페이지 맨 위로 이동하므로 ! 사용
+              className={styles.pageLink}
+            >
+              {number}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
+
 
 function Community() {
   const [searchParams] = useSearchParams();
@@ -8,35 +44,183 @@ function Community() {
   const defaultTab = searchParams.get('tab') || 'notice';
   const [category, setCategory] = useState(defaultTab);
 
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(4); // 한 페이지에 4개씩 표시
+
+
   useEffect(() => {
     const newTab = searchParams.get('tab');
     if (newTab && newTab !== category) {
       setCategory(newTab);
+      setCurrentPage(1); // 탭이 URL로 변경될 때도 페이지 1로
     }
   }, [searchParams, category]);
 
-  const noticePosts = [
-    { title: "서비스 점검 안내", date: "2025.06.01" },
-    { title: "새로운 기능 업데이트 안내", date: "2025.05.25" },
-    { title: "이용약관 변경 안내", date: "2025.05.10" },
-  ];
-  const boardPosts = [
-    { title: "서비스 이용 관련 문의드립니다", date: "2025.04.01" },
-    { title: "로그인 오류가 발생했어요", date: "2025.03.28" },
-    { title: "회원가입 절차에 대해 질문있습니다", date: "2025.03.25" },
-    { title: "결제 시스템 문의", date: "2025.03.20" },
-  ];
-  const suggestionPosts = [
-    { title: "서비스 개선 아이디어 제안", date: "2025.04.03" },
-    { title: "모바일 앱 기능 추가 요청", date: "2025.03.30" },
-    { title: "웹사이트 디자인 개선 제안", date: "2025.03.27" },
-    { title: "새로운 서비스 아이디어", date: "2025.03.22" },
-  ];
-  const cardNewsPosts = [
-    { title: "건강한 마음 가꾸기", date: "2025.04.15" },
-    { title: "스트레스 관리 팁", date: "2025.04.10" },
-    { title: "일상 속 소소한 행복", date: "2025.04.05" },
-  ];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      setError(null);
+      setPosts([]);
+
+      try {
+        let apiUrl = '';
+        const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
+        switch (category) {
+          case 'notice':
+            apiUrl = `${baseUrl}/api/notice`;
+            break;
+          case 'suggestion':
+            apiUrl = `${baseUrl}/api/inquiry/all`;
+            break;
+          case 'board':
+            apiUrl = `${baseUrl}/api/community-posts`;
+            break;
+          case 'cardNews':
+            apiUrl = `${baseUrl}/api/card`;
+            break;
+          default:
+            apiUrl = `${baseUrl}/api/${category}`;
+            break;
+        }
+
+        const response = await axios.get(apiUrl);
+
+        let data = response.data; 
+
+        if (category !== 'suggestion' && Array.isArray(data)) {
+          data.sort((a, b) => {
+            const dateA = new Date(a.date || a.createdAt).getTime();
+            const dateB = new Date(b.date || b.createdAt).getTime();
+            return dateB - dateA;
+          });
+        }
+
+        setPosts(data);
+      } catch (err) {
+        setError(err.message || '데이터를 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [category]);
+
+
+  const renderContent = () => {
+    if (loading) {
+      return <div className={styles.loading}>로딩 중입니다...</div>;
+    }
+
+    if (error) {
+      return <div className={styles.error}>오류가 발생했습니다: {error}</div>;
+    }
+
+    if (posts.length === 0) {
+      return <div className={styles.noPosts}>게시글이 없습니다.</div>;
+    }
+
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    // posts (전체) 배열에서 현재 페이지에 해당하는 4개만 잘라냄
+    const currentPostsOnPage = posts.slice(indexOfFirstPost, indexOfLastPost);
+    if (currentPostsOnPage.length === 0 && posts.length > 0) {
+      // 이 경우는 2페이지에 데이터가 0개일 때 발생 -> 1페이지로 강제 이동
+      setCurrentPage(1);
+      return null;
+    }
+
+    if (posts.length === 0) {
+        return <div className={styles.noPosts}>게시글이 없습니다.</div>;
+    }
+
+    return (
+      <ul className={styles.postList}>
+        {currentPostsOnPage.map((post, idx) => {
+          
+          let displayData = '';
+          let isClickable = false;
+          let clickHandler = undefined;
+
+          const dateString = post.date || post.createdAt;
+
+          if (category === 'suggestion') {
+            isClickable = true;
+            clickHandler = () => navigate(`/suggestion-detail/${post.id}`);
+            displayData = post.nickname;
+          } 
+          else if (category === 'notice') {
+            isClickable = true;
+            clickHandler = () => navigate(`/notice-detail/${post.postId}`);
+            
+            // 날짜 포맷팅
+            if (dateString) {
+              displayData = dateString.replace('T', ' ').slice(0, 16);
+            }
+          } 
+          else if (category === 'cardNews') {
+            isClickable = true;
+            // API 명세서(상세)를 보니 ID가 'postId'입니다.
+            clickHandler = () => navigate(`/card-detail/${post.postId}`); 
+            if (dateString) {
+              displayData = dateString.replace('T', ' ').slice(0, 16);
+            }
+          }
+          else {
+            // 그 외 (현재 오류나는 'board' 등)
+            if (dateString) {
+              displayData = dateString.replace('T', ' ').slice(0, 16);
+            }
+          }
+
+          return (
+            <li 
+              className={`${styles.postItem} ${isClickable ? styles.postItemClickable : ''}`} 
+              key={post.postId || post.id || idx}
+              onClick={clickHandler}
+            >
+              <span className={styles.postTitle}>{post.title}</span>
+              <span className={styles.postDate}>{displayData}</span>
+            </li>
+          );
+        })}
+      </ul>	
+    );
+  };
+
+  // const noticePosts = [
+  //   { title: "서비스 점검 안내", date: "2025.06.01" },
+  //   { title: "새로운 기능 업데이트 안내", date: "2025.05.25" },
+  //   { title: "이용약관 변경 안내", date: "2025.05.10" },
+  // ];
+  // const boardPosts = [
+  //   { title: "서비스 이용 관련 문의드립니다", date: "2025.04.01" },
+  //   { title: "로그인 오류가 발생했어요", date: "2025.03.28" },
+  //   { title: "회원가입 절차에 대해 질문있습니다", date: "2025.03.25" },
+  //   { title: "결제 시스템 문의", date: "2025.03.20" },
+  // ];
+  // const suggestionPosts = [
+  //   { title: "서비스 개선 아이디어 제안", date: "2025.04.03" },
+  //   { title: "모바일 앱 기능 추가 요청", date: "2025.03.30" },
+  //   { title: "웹사이트 디자인 개선 제안", date: "2025.03.27" },
+  //   { title: "새로운 서비스 아이디어", date: "2025.03.22" },
+  // ];
+  // const cardNewsPosts = [
+  //   { title: "건강한 마음 가꾸기", date: "2025.04.15" },
+  //   { title: "스트레스 관리 팁", date: "2025.04.10" },
+  //   { title: "일상 속 소소한 행복", date: "2025.04.05" },
+  // ];
+  // const currentPosts = {
+  //   notice: noticePosts,
+  //   board: boardPosts,
+  //   suggestion: suggestionPosts,
+  //   cardNews: cardNewsPosts,
+  // }[category];
 
   const tabs = [
     { key: "notice", label: "공지사항", description: "공지사항 소개글" },
@@ -44,13 +228,6 @@ function Community() {
     { key: "suggestion", label: "건의사항", description: "건의사항 소개글" },
     { key: "cardNews", label: "카드뉴스", description: "카드뉴스 소개글" },
   ];
-
-  const currentPosts = {
-    notice: noticePosts,
-    board: boardPosts,
-    suggestion: suggestionPosts,
-    cardNews: cardNewsPosts,
-  }[category];
 
   const currentDescription = {
     notice: "공지사항을 확인하세요",
@@ -78,6 +255,7 @@ function Community() {
                 onClick={() => {
                   setCategory(tab.key);
                   navigate(`/community?tab=${tab.key}`);
+                  setCurrentPage(1);
                 }}
               >
                 <h3>{tab.label}</h3>
@@ -95,8 +273,8 @@ function Community() {
               <p>Since: {currentCategoryInfo.since}</p>
             </div>
             <div className={styles.buttonGroup}>
-              <button className={styles.actionBtn}>글쓰기</button>
-              {category === "cardNews" ? (
+              <button className={styles.actionBtn} onClick={() => navigate(`/community-write?category=${category}`)}>글쓰기</button>
+              {/* {category === "cardNews" ? (
                 <>
                   <button className={styles.actionBtn}>인스타</button>
                   <button className={styles.actionBtn}>유튜브</button>
@@ -111,16 +289,25 @@ function Community() {
                     </>
                   )}
                 </>
-              )}
+              )} */}
             </div>
-            <ul className={styles.postList}>
+            {/* <ul className={styles.postList}>
               {currentPosts.map((post, idx) => (
                 <li className={styles.postItem} key={idx}>
                   <span className={styles.postTitle}>{post.title}</span>
                   <span className={styles.postDate}>{post.date}</span>
                 </li>
               ))}
-            </ul>
+            </ul> */}
+
+            {renderContent()}
+
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={posts.length}
+              paginate={(pageNumber) => setCurrentPage(pageNumber)}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>
