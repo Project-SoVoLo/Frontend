@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';  //npm install date-fns 필요
 import './Mypage.css';
 import './Detail.css';
-import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
-import { format } from 'date-fns';  //npm install date-fns 필요
 
 function Counseling() {
   const nav = useNavigate();
@@ -11,7 +11,11 @@ function Counseling() {
   const [detailItem, setDetailItem] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  // 페이지네이션
   const itemsPerPage = 8;
+  const groupSize = 5;
+  const [pageGroup, setPageGroup] = useState(0);
 
   const token = localStorage.getItem('token');
 
@@ -28,6 +32,8 @@ function Counseling() {
       }
     })
       .then(response => {
+        console.log("상담데이터: ", response.data);
+
         const sortedData = (response.data || []).sort(
           (a, b) => new Date(b.date) - new Date(a.date)
         );
@@ -46,6 +52,10 @@ function Counseling() {
     currentPage * itemsPerPage
   );
 
+  // 현재 그룹의 시작/끝 페이지 계산
+  const startPage = pageGroup * groupSize + 1;
+  const endPage = Math.min(startPage + groupSize - 1, totalPages);
+
   if (loading) {
     return <div className="tab-content active">상담요약 데이터를 불러오는 중입니다...</div>;
   }
@@ -54,6 +64,7 @@ function Counseling() {
     return <div className="tab-content active">상담기록이 없습니다.</div>;
   }
 
+  // 상세보기
   if (detailItem) {
     return (
       <div className="tab-content active">
@@ -65,11 +76,11 @@ function Counseling() {
             <tbody>
               <tr>
                 <td>요약</td>
-                <td>{detailItem.summary}</td>
+                <td>{detailItem.summary || '요약 정보가 없습니다.'}</td>
               </tr>
               <tr>
                 <td>피드백</td>
-                <td>{detailItem.feedback}</td>
+                <td>{detailItem.feedback || '피드백 정보가 없습니다.'}</td>
               </tr>
               <tr>
                 <td>감정</td>
@@ -90,6 +101,8 @@ function Counseling() {
       </div>
     );
   }
+  console.log("선택된 상세 아이템:", detailItem);
+  
 
 
   return (
@@ -100,26 +113,44 @@ function Counseling() {
             <tr><th>요약</th><th>날짜</th></tr>
           </thead>
           <tbody>
-            {pageData.map((d, index) => (
-              <tr key={d.id ?? `row-${index}`} className="clickable-row" onClick={() => setDetailItem(d)}>
-                <td>{d.summary}</td>
-                <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
-              </tr>
-            ))}
+            {pageData.map((d, index) => {
+              const globalIndex = (currentPage - 1) * itemsPerPage + index;
+              
+              const totalCount = data.length;
+              
+              const recordNumber = totalCount - globalIndex;
 
+              return (
+                <tr
+                  key={d.id ?? `row-${index}`}
+                  className="clickable-row"
+                  onClick={() => setDetailItem(d)}
+                >
+                  <td>{`${recordNumber}번째 상담기록`}</td>
+                  <td>{format(new Date(d.date), 'yyyy-MM-dd')}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
+
       <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => (
+        {pageGroup > 0 && (
+          <button onClick={() => setPageGroup(pageGroup - 1)}>←</button>
+        )}
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
           <button
-            key={`page-${i}`}
-            className={currentPage === i + 1 ? 'active' : ''}
-            onClick={() => setCurrentPage(i + 1)}
+            key={`page-${startPage + i}`}
+            className={currentPage === startPage + i ? 'active' : ''}
+            onClick={() => setCurrentPage(startPage + i)}
           >
-            {i + 1}
+            {startPage + i}
           </button>
         ))}
+        {endPage < totalPages && (
+          <button onClick={() => setPageGroup(pageGroup + 1)}>→</button>
+        )}
       </div>
     </div>
   );

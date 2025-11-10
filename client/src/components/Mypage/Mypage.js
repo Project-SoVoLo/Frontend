@@ -5,7 +5,9 @@ import Counseling from './Counseling';
 import SelfTest from './SelfTest';
 import EmotionChart from './EmotionChart';
 import EditProfile from './EditProfile';
+import Profile from './Profile';
 import './Mypage.css';
+
 
 function MyPage() {
   const [searchParams] = useSearchParams();
@@ -25,6 +27,7 @@ function MyPage() {
       case 'self_test': return <SelfTest />;
       case 'emotion_chart': return <EmotionChart />;
       case 'edit_profile': return <EditProfile />;
+      case 'profile': return <Profile />
       default: return null;
     }
   };
