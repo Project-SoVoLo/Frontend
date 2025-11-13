@@ -73,8 +73,8 @@
     position: relative;
     min-width: 0;
 
-    /* display: flex; /* 자식 요소(.contentActive)가 높이를 100% 가질 수 있게 
-    min-height: 600px;*/
+    display: flex; /* 자식 요소(.contentActive)가 높이를 100% 가질 수 있게 */
+    min-height: 600px;
 } 
 
 .content {
@@ -85,6 +85,12 @@
     display: flex;        
     flex-direction: column;
     width: 100%;
+}
+
+.contentActive form{
+  flex-grow: 1;
+  display: 'flex';
+  flex-direction: 'column';
 }
 
 .content h2 {
@@ -190,10 +196,11 @@
     }
 }
 
-/* 글쓰기 폼 그룹 */
+/* 글쓰기 */
 .formGroup {
   width: 100%;
   margin-bottom: 24px;
+  flex-grow: 1;
 }
 
 .formGroup label {
@@ -253,8 +260,8 @@
 
 .cancelBtn {
   padding: 10px 24px;
-  background-color: #f1f3f5;
-  color: #333;
+  background-color: #ffd46c;
+  color: white;
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -318,6 +325,7 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 20px;
   margin-bottom: 24px;
+  
 }
 
 .detailTitle {
@@ -342,6 +350,26 @@
   line-height: 1.7;
   min-height: 200px;
   padding-bottom: 30px;
+  flex-grow: 1;
+}
+
+.likeButton {
+  padding: 10px 24px;
+  margin: 0 10px;
+  background-color: #ffd46c;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.likeButton:hover {
+  background-color: #ffc84a;
+  color: white;
 }
 
 /* 건의사항 상세보기 */
@@ -458,26 +486,25 @@
   border-color: #ffd46c;
 }
 
-
-/* CardDetail.js Image Styles   */
+/* CardNews */
 .cardImageContainer {
   display: flex;
-  flex-direction: column; /* 이미지를 세로로 나열 */
-  gap: 15px; /* 이미지 사이 간격 */
+  flex-direction: column;
+  gap: 15px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
 .cardImage {
   width: 100%;
-  max-width: 700px; /* 이미지 최대 너비 (조절 가능) */
-  height: auto; /* 비율 유지 */
-  border-radius: 8px; /* 이미지 모서리 */
+  max-width: 700px;
+  height: auto;
+  border-radius: 8px;
   border: 1px solid #eee;
-  align-self: center; /* 이미지 중앙 정렬 */
+  align-self: center;
 }
 
-/* 좋아요/북마크 버튼 감싸는 영역 (공용) */
+
 .detailActions {
   margin-bottom: 24px;
   padding-top: 20px;
@@ -486,14 +513,7 @@
   justify-content: center;
 }
 
-/* ... (기존 .likeButton, .liked 스타일) ... */
-
-
-/* ============================ */
-/* CardDetail.js Bookmark Button */
-/* ============================ */
-
-/* 기본 북마크 버튼 */
+/* 북마크 버튼 */
 .bookmarkButton {
   padding: 10px 20px;
   font-size: 16px;
@@ -511,9 +531,9 @@
   border-color: #ccc;
 }
 
-/* 북마크 누른 상태 (활성화 색상) */
+/* 북마크 누른 상태 */
 .bookmarkButton.bookmarked {
-  background-color: #ffd46c; /* 활성 탭 색상 (노란색) */
+  background-color: #ffd46c;
   color: white;
   border-color: #ffd46c;
 }
@@ -522,19 +542,16 @@
   border-color: #ffc84a;
 }
 
-/* 비활성화 시 */
 .bookmarkButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-
-/* 아이콘 버튼 컨테이너 (이전 bookmarkButton 대체) */
 .bookmarkIconButton {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0; /* 내부 패딩 제거 */
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -542,14 +559,13 @@
 }
 
 .bookmarkIconButton:hover:not(:disabled) {
-  transform: scale(1.1); /* 호버 시 약간 확대 */
+  transform: scale(1.1);
 }
 
-/* 북마크 아이콘 이미지 자체 스타일 */
 .bookmarkIcon {
-  width: 32px; /* 아이콘 크기 (조절 가능) */
+  width: 32px;
   height: 32px;
-  display: block; /* 불필요한 공백 제거 */
+  display: block;
 }
 
 .bookmarkIconButton:disabled {

@@ -1,3 +1,58 @@
+.chart-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #eee;
+}
+
+/* 차트와 차트 사이의 간격 */
+.emotion-chart + .emotion-chart {
+  margin-top: 40px;
+}
+
+.emotion-chart-nav {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  background-color: #fcfcfc;
+}
+
+/* 개별 탭 버튼 */
+.emotion-tab-button {
+  flex: 1; /* 탭이 공간을 균등하게 차지 */
+  padding: 16px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase; /* (예: DEPRESSION) */
+}
+
+/* 탭 버튼 호버 효과 */
+.emotion-tab-button:hover {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+/* 활성화된 탭 버튼 (Profile.js 탭과 동일한 스타일) */
+.emotion-tab-button-active {
+  color: #333;
+  border-bottom-color: #ffd46c; /* Community.js의 포인트 컬러 */
+}
+
+/* 차트가 그려지는 캔버스 영역 */
+.emotion-chart-content {
+  padding-top: 20px;
+}
+
+
+
 /* 전체영역 */
 body {
   background-color: #F8F4E8;
@@ -162,15 +217,7 @@ body {
   padding:20px 0;
 }
 
-
-/* 호전상태 */
-.emotion-chart {
-  height: 50vh;
-  max-height: 50vh;
-  margin: 60px 30px;
-}
-
-/* 개인정보 */
+/* 개인정보수정 */
 .profileForm {
   max-width: 600px;
   margin-left: auto;

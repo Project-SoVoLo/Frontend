@@ -8,6 +8,7 @@ import Diagnosis from "./components/Diagnosis/Diagnosis.js";
 import Community from "./components/Community/Community.js";
 import CommunityWrite from "./components/Community/CommunityWrite.js";
 import NoticeDetail from './components/Community/NoticeDetail';
+import BoardDetail from './components/Community/BoardDetail';
 import SuggestionDetail from './components/Community/SuggestionDetail';
 import CardDetail from './components/Community/CardDetail';
 import Mypage from "./components/Mypage/Mypage.js";
@@ -35,6 +36,7 @@ function App() {
             <Route path="/community" element={<Community />} />
             <Route path="/community-write" element={<CommunityWrite />} />
             <Route path="/notice-detail/:id" element={<NoticeDetail />} />
+            <Route path="/board-detail/:id" element={<BoardDetail />} />
             <Route path="/suggestion-detail/:id" element={<SuggestionDetail />} />
             <Route path="/card-detail/:id" element={<CardDetail />} />
             <Route path="/mypage" element={<Mypage />} />

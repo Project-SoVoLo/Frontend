@@ -1,114 +1,198 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from '../../api/axios';
 import styles from './Community.module.css';
 
 function CommunityWrite() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
-  const [category, setCategory] = useState('');
+  const category = searchParams.get('category');
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const cat = searchParams.get('category');
-    if (cat) {
-      setCategory(cat);
-    } else {
-      navigate('/community');
-    }
-  }, [searchParams, navigate]);
+  const getTitle = () => {
+    if (category === 'board') return '커뮤니티 글쓰기';
+    if (category === 'suggestion') return '건의사항 작성';
+    return '글쓰기';
+  };
 
+  // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError(null);
 
-    let apiUrl = '';
-    let postData = {};
+    const token = localStorage.getItem('token');
+    const userEmail = localStorage.getItem('userEmail');
 
-    switch (category) {
-      case 'suggestion':
-        apiUrl = '/api/inquiry';
-        postData = { title, content, password };
-        break;
-      
-      case 'board':
-        apiUrl = '/api/community-posts';
-        postData = { 
-          title, 
-          blocks: [{ type: 'text', content: content }]
-        };
-        break;
-      
-      default:
-        setError('유효하지 않은 카테고리입니다.');
-        return;
+    // 2. 토큰/이메일 유무 확인
+    if (!token || !userEmail) {
+      setError('로그인 정보가 필요합니다. 다시 로그인해주세요.');
+      setLoading(false);
+      return;
     }
 
+    let endpoint = '';
+    let payload = {};
+
     try {
-      await axios.post(apiUrl, postData);
-      
-      alert('게시글이 성공적으로 등록되었습니다.');
+      // 3. axios 요청 헤더를 구성합니다.
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'X-User-Id': userEmail
+      };
+
+      if (category === 'board') {
+        // 커뮤니티 게시글 작성
+        endpoint = `/api/community-posts`;
+        payload = {
+          title,
+          blocks: [
+            { type: 'text', content: content }
+          ]
+        };
+
+        // 기본 유효성 검사
+        if (!title || !content) {
+          setError('제목과 내용을 모두 입력해주세요.');
+          setLoading(false);
+          return;
+        }
+
+      } else if (category === 'suggestion') {
+        // 건의사항 게시판 글 작성
+        endpoint = `/api/inquiry`;
+        payload = {
+          title,
+          content,
+          password
+        };
+
+        // 기본 유효성 검사
+        if (!title || !content || !password) {
+          setError('제목, 내용, 비밀번호를 모두 입력해주세요.');
+          setLoading(false);
+          return;
+        }
+
+      } else {
+        setError('유효하지 않은 카테고리입니다.');
+        setLoading(false);
+        return;
+      }
+
+      // 4. axios.post 호출 시 payload와 **headers**를 함께 전달합니다.
+      await axios.post(endpoint, payload, { headers: headers });
+
+      // 작성 성공 시, 해당 카테고리 탭으로 이동
       navigate(`/community?tab=${category}`);
 
     } catch (err) {
-      console.error("게시글 등록 실패:", err);
-      setError(err.response?.data?.message || err.message || '게시글 등록 중 오류가 발생했습니다.');
+      console.error("Post submission error:", err);
+      // 서버에서 오는 에러 메시지가 있다면 표시, 없다면 기본 메시지
+      const serverMessage = err.response?.data?.message;
+      if (serverMessage) {
+        setError(serverMessage); // "사용자 정보를 찾을 수 없습니다."
+      } else {
+        setError(err.message || '글 작성 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const pageTitle = {
-    suggestion: '건의사항 글쓰기',
-    board: '커뮤니티 글쓰기',
-  }[category];
+  // 취소 버튼 핸들러
+  const handleCancel = () => {
+    navigate(`/community?tab=${category || 'notice'}`);
+  };
+
+  // 'board' 또는 'suggestion'이 아닐 경우
+  useEffect(() => {
+    if (!category || (category !== 'board' && category !== 'suggestion')) {
+      navigate('/community?tab=notice');
+    }
+  }, [category, navigate]);
+
+  if (!category || (category !== 'board' && category !== 'suggestion')) {
+    return null;
+  }
 
   return (
-    <div className={styles.contentContainer}>
-      <h2>{pageTitle}</h2>
-      <form onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label htmlFor="title">제목</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="content">내용</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        
-        {/* 건의사항 카테고리일 때만 비밀번호 입력 표시 */}
-        {category === 'suggestion' && (
-          <div className={styles.formGroup}>
-            <label htmlFor="password">비밀번호</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="게시글 확인용 비밀번호 (숫자, 문자 등)"
-              required
-            />
+    <div className={styles.container}>
+      <div className={styles.mainContent}>
+        <div className={styles.contentContainer} style={{ flex: 1, minWidth: 0 }}>
+          <div className={`${styles.content} ${styles.contentActive}`}>
+            <h2>{getTitle()}</h2>
+
+            <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="title">제목</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="제목을 입력하세요"
+                  className={styles.formInput}
+                />
+              </div>
+
+              <div className={styles.formGroup} style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                <label htmlFor="content">내용</label>
+                <textarea
+                  id="content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="내용을 입력하세요"
+                  style={{ flexGrow: 1, minHeight: '250px' }}
+                />
+              </div>
+
+              {/* 건의사항일 때만 비밀번호 필드 표시 */}
+              {category === 'suggestion' && (
+                <div className={styles.formGroup}>
+                  <label htmlFor="password">비밀번호</label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="비밀번호를 입력하세요"
+                    autoComplete="new-password"
+                  />
+                </div>
+              )}
+
+              {/* 에러 메시지 표시 */}
+              {error && <div className={styles.error}>{error}</div>}
+
+              {/* 버튼 그룹 */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px' }}>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={handleCancel}
+                  disabled={loading}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className={styles.submitBtn}
+                  disabled={loading}
+                >
+                  {loading ? '등록 중...' : '등록'}
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-        
-        {error && <p className={styles.error}>{error}</p>}
-        <button type="submit">등록하기</button>
-        <button type="button" onClick={() => navigate(-1)}>취소</button>
-      </form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -9,38 +9,36 @@ function EditProfile() {
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
   const [phone, setPhone] = useState('');
-  const [data, setData] = useState(null);
-  const [token, setToken] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('role');
+    localStorage.removeItem('userName');
 
     window.dispatchEvent(new Event('loginStateChange'));
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (!email || !password || !name || !nickname || !phone) {
-      alert("입력 오류: 모든 항목을 입력해주세요.");
+      alert("입력 오류: 이메일, 이름, 닉네임, 휴대전화번호는 필수입니다.");
       return;
     }
     try {
-      const token = localStorage.getItem('token');
-
       await axios.post('/api/users/edit-info', {
         newEmail: email,
         newPassword: password,
         userName: name,
         nickname: nickname,
         userPhone: phone,
-      }, {
-        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      alert('개인정보 변경 성공! 로그인 페이지로 이동합니다.');
+      alert('개인정보 변경 성공! 다시 로그인해 주세요.');
       handleLogout();
       navigate('/login', { replace: true });
 
@@ -50,45 +48,28 @@ function EditProfile() {
     }
   };
 
-  // 토큰 불러오기
-  useEffect(() => {
-    const loadAuthData = () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        setToken(token);
-      }
-    };
-    loadAuthData();
-  }, []);
-
   // 유저 정보 불러오기
   useEffect(() => {
-    if (!token) return;
+    const fetchProfile = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get('/api/mypage/profile');
 
-    setLoading(true);
-    axios.get('/api/mypage/profile', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => {
-        setData(res.data);
-      })
-      .catch(err => {
+        if (res.data) {
+          setEmail(res.data.userEmail || '');
+          setName(res.data.userName || '');
+          setNickname(res.data.nickname || '');
+          setPhone(res.data.userPhone || '');
+        }
+      } catch (err) {
         alert("오류: 계정 정보를 불러오지 못했습니다.");
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
-  }, [token]);
+      }
+    };
 
-  // 기존 데이터 채우기
-  useEffect(() => {
-    if (data) {
-      setEmail(data.userEmail || '');
-      setName(data.userName || '');
-      setNickname(data.nickname || '');
-      setPhone(data.userPhone || '');
-    }
-  }, [data]);
+    fetchProfile();
+  }, []);
 
   if (loading) {
     return <div className="tab-content active"><h3>로딩 중...</h3></div>;
@@ -98,7 +79,6 @@ function EditProfile() {
     <div className="tab-content active">
       <form className="profileForm" onSubmit={handleSubmit}>
         <h1 className="title">개인정보 변경</h1>
-
         <table className="profile-table">
           <tbody>
             <tr>
@@ -123,7 +103,7 @@ function EditProfile() {
                   id="password"
                   className="input"
                   type="password"
-                  placeholder="새 비밀번호"
+                  placeholder="변경할 새 비밀번호 (선택)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

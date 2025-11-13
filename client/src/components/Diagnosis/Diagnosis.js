@@ -47,11 +47,11 @@ function Diagnosis() {
     .catch(err => {
       alert("진단 유형 목록을 불러오지 못했습니다.");
     });
-}, []);
+}, [token]);
 
 
 useEffect(() => {
-  if (!selectedTest) return;
+  if (!selectedTest || !token) return;
   setLoading(true);
   axios.get(`http://localhost:8080/api/diagnosis/questions/${selectedTest}`, {
   headers: { 'Authorization': `Bearer ${token}` }
@@ -67,7 +67,7 @@ useEffect(() => {
       alert("문항을 불러오지 못했습니다.");
       setLoading(false);
     });
-}, [selectedTest]);
+}, [selectedTest, token]);
 
 
   const handleAnswerChange = (questionIdx, value) => {

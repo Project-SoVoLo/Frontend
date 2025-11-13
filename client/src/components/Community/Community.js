@@ -10,7 +10,6 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
     pageNumbers.push(i);
   }
 
-  // 게시글이 1페이지 이하면 페이지네이션을 숨김
   if (pageNumbers.length <= 1) {
     return null;
   }
@@ -25,7 +24,7 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
           >
             <a 
               onClick={() => paginate(number)} 
-              href="#!" // href="#"는 페이지 맨 위로 이동하므로 ! 사용
+              href="#!"
               className={styles.pageLink}
             >
               {number}
@@ -36,7 +35,6 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
     </nav>
   );
 };
-
 
 function Community() {
   const [searchParams] = useSearchParams();
@@ -49,14 +47,14 @@ function Community() {
   const [error, setError] = useState(null);
 
 const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(4); // 한 페이지에 4개씩 표시
+  const [postsPerPage] = useState(4);
 
 
   useEffect(() => {
     const newTab = searchParams.get('tab');
     if (newTab && newTab !== category) {
       setCategory(newTab);
-      setCurrentPage(1); // 탭이 URL로 변경될 때도 페이지 1로
+      setCurrentPage(1);
     }
   }, [searchParams, category]);
 
@@ -127,10 +125,8 @@ const [currentPage, setCurrentPage] = useState(1);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    // posts (전체) 배열에서 현재 페이지에 해당하는 4개만 잘라냄
     const currentPostsOnPage = posts.slice(indexOfFirstPost, indexOfLastPost);
     if (currentPostsOnPage.length === 0 && posts.length > 0) {
-      // 이 경우는 2페이지에 데이터가 0개일 때 발생 -> 1페이지로 강제 이동
       setCurrentPage(1);
       return null;
     }
@@ -162,17 +158,23 @@ const [currentPage, setCurrentPage] = useState(1);
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
+          }
+
+          else if (category === 'board') {
+            isClickable = true;
+            clickHandler = () => navigate(`/board-detail/${post.id}`);
+            displayData = post.nickname;
           } 
+
           else if (category === 'cardNews') {
             isClickable = true;
-            // API 명세서(상세)를 보니 ID가 'postId'입니다.
             clickHandler = () => navigate(`/card-detail/${post.postId}`); 
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
           }
+
           else {
-            // 그 외 (현재 오류나는 'board' 등)
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
@@ -253,9 +255,14 @@ const [currentPage, setCurrentPage] = useState(1);
                 key={tab.key}
                 className={`${styles.categoryBtn} ${category === tab.key ? styles.categoryBtnActive : ""}`}
                 onClick={() => {
-                  setCategory(tab.key);
-                  navigate(`/community?tab=${tab.key}`);
-                  setCurrentPage(1);
+                  // setCategory(tab.key);
+                  // navigate(`/community?tab=${tab.key}`);
+                  // setCurrentPage(1);
+                  if (category !== tab.key) { // 같은 탭일 땐 다시 요청 안 보냄
+      setCategory(tab.key);
+      navigate(`/community?tab=${tab.key}`);
+      setCurrentPage(1);
+    }
                 }}
               >
                 <h3>{tab.label}</h3>
@@ -273,7 +280,14 @@ const [currentPage, setCurrentPage] = useState(1);
               <p>Since: {currentCategoryInfo.since}</p>
             </div>
             <div className={styles.buttonGroup}>
-              <button className={styles.actionBtn} onClick={() => navigate(`/community-write?category=${category}`)}>글쓰기</button>
+              {(category === 'board' || category === 'suggestion') && (
+                <button 
+                  className={styles.actionBtn} 
+                  onClick={() => navigate(`/community-write?category=${category}`)}
+                >
+                  글쓰기
+                </button>
+              )}
               {/* {category === "cardNews" ? (
                 <>
                   <button className={styles.actionBtn}>인스타</button>
