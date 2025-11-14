@@ -13,6 +13,7 @@ function NoticeDetail() {
 
   const [isLiking, setIsLiking] = useState(false);
 
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -30,7 +31,7 @@ function NoticeDetail() {
     fetchPost();
   }, [id]);
 
-
+  // 좋아요
   const handleLike = async () => {
     if (isLiking) return;
     setIsLiking(true);
@@ -58,7 +59,6 @@ function NoticeDetail() {
     return <div className={styles.contentContainer}>게시글을 찾을 수 없습니다.</div>;
   }
 
-  // 날짜 포맷팅 (YYYY-MM-DD HH:MM)
   const formattedDate = post.date
     ? post.date.replace('T', ' ').slice(0, 16)
     : '날짜 없음';

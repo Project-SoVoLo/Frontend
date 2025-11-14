@@ -28,8 +28,8 @@ function CommunityWrite() {
 
     const token = localStorage.getItem('token');
     const userEmail = localStorage.getItem('userEmail');
+    const userNickname = localStorage.getItem('userNickname');
 
-    // 2. 토큰/이메일 유무 확인
     if (!token || !userEmail) {
       setError('로그인 정보가 필요합니다. 다시 로그인해주세요.');
       setLoading(false);
@@ -40,14 +40,12 @@ function CommunityWrite() {
     let payload = {};
 
     try {
-      // 3. axios 요청 헤더를 구성합니다.
       const headers = {
         'Authorization': `Bearer ${token}`,
         'X-User-Id': userEmail
       };
 
       if (category === 'board') {
-        // 커뮤니티 게시글 작성
         endpoint = `/api/community-posts`;
         payload = {
           title,
@@ -56,7 +54,6 @@ function CommunityWrite() {
           ]
         };
 
-        // 기본 유효성 검사
         if (!title || !content) {
           setError('제목과 내용을 모두 입력해주세요.');
           setLoading(false);
@@ -64,7 +61,6 @@ function CommunityWrite() {
         }
 
       } else if (category === 'suggestion') {
-        // 건의사항 게시판 글 작성
         endpoint = `/api/inquiry`;
         payload = {
           title,
@@ -72,7 +68,6 @@ function CommunityWrite() {
           password
         };
 
-        // 기본 유효성 검사
         if (!title || !content || !password) {
           setError('제목, 내용, 비밀번호를 모두 입력해주세요.');
           setLoading(false);
@@ -85,18 +80,37 @@ function CommunityWrite() {
         return;
       }
 
-      // 4. axios.post 호출 시 payload와 **headers**를 함께 전달합니다.
+      console.log("==========글쓰기 요청 전송==========");
+      if (token) {
+        console.log("포함될 토큰 (앞 10자리):", token.substring(0, 10) + "...");
+      } else {
+        console.warn("localStorage에 'token'이 없습니다. (요청이 실패할 수 있습니다)");
+      }
+      
+      if (userEmail) {
+        console.log("포함될 X-User-Id:", userEmail);
+      } else {
+        console.warn("localStorage에 'userEmail'이 없습니다. (요청이 실패할 수 있습니다)");
+      }
+
+      if(userNickname){
+        console.log("userNickname:", userNickname);
+      } else {
+        console.warn("localStorage에 'userNickname'이 없습니다. (요청이 실패할 수 있습니다)");
+      }
+
+      console.log("요청 엔드포인트:", endpoint, payload);
+      console.log("===================================");
+
       await axios.post(endpoint, payload, { headers: headers });
 
-      // 작성 성공 시, 해당 카테고리 탭으로 이동
       navigate(`/community?tab=${category}`);
 
     } catch (err) {
       console.error("Post submission error:", err);
-      // 서버에서 오는 에러 메시지가 있다면 표시, 없다면 기본 메시지
       const serverMessage = err.response?.data?.message;
       if (serverMessage) {
-        setError(serverMessage); // "사용자 정보를 찾을 수 없습니다."
+        setError(serverMessage);
       } else {
         setError(err.message || '글 작성 중 오류가 발생했습니다.');
       }
@@ -105,7 +119,6 @@ function CommunityWrite() {
     }
   };
 
-  // 취소 버튼 핸들러
   const handleCancel = () => {
     navigate(`/community?tab=${category || 'notice'}`);
   };
@@ -168,10 +181,8 @@ function CommunityWrite() {
                 </div>
               )}
 
-              {/* 에러 메시지 표시 */}
               {error && <div className={styles.error}>{error}</div>}
-
-              {/* 버튼 그룹 */}
+              
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px' }}>
                 <button
                   type="button"

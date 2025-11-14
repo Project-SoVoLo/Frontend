@@ -18,12 +18,12 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
     <nav>
       <ul className={styles.pagination}>
         {pageNumbers.map(number => (
-          <li 
-            key={number} 
+          <li
+            key={number}
             className={`${styles.pageItem} ${currentPage === number ? styles.pageItemActive : ''}`}
           >
-            <a 
-              onClick={() => paginate(number)} 
+            <a
+              onClick={() => paginate(number)}
               href="#!"
               className={styles.pageLink}
             >
@@ -46,9 +46,11 @@ function Community() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(4);
 
+  const userRole = localStorage.getItem('userRole');
+  const isAdmin = userRole === 'ADMIN';
 
   useEffect(() => {
     const newTab = searchParams.get('tab');
@@ -88,7 +90,7 @@ const [currentPage, setCurrentPage] = useState(1);
 
         const response = await axios.get(apiUrl);
 
-        let data = response.data; 
+        let data = response.data;
 
         if (category !== 'suggestion' && Array.isArray(data)) {
           data.sort((a, b) => {
@@ -97,7 +99,6 @@ const [currentPage, setCurrentPage] = useState(1);
             return dateB - dateA;
           });
         }
-
         setPosts(data);
       } catch (err) {
         setError(err.message || '데이터를 불러오는 중 오류가 발생했습니다.');
@@ -105,7 +106,6 @@ const [currentPage, setCurrentPage] = useState(1);
         setLoading(false);
       }
     };
-
     fetchPosts();
   }, [category]);
 
@@ -132,13 +132,13 @@ const [currentPage, setCurrentPage] = useState(1);
     }
 
     if (posts.length === 0) {
-        return <div className={styles.noPosts}>게시글이 없습니다.</div>;
+      return <div className={styles.noPosts}>게시글이 없습니다.</div>;
     }
 
     return (
       <ul className={styles.postList}>
         {currentPostsOnPage.map((post, idx) => {
-          
+
           let displayData = '';
           let isClickable = false;
           let clickHandler = undefined;
@@ -148,13 +148,13 @@ const [currentPage, setCurrentPage] = useState(1);
           if (category === 'suggestion') {
             isClickable = true;
             clickHandler = () => navigate(`/suggestion-detail/${post.id}`);
-            displayData = post.nickname;
-          } 
+            displayData = post.author;
+          }
           else if (category === 'notice') {
             isClickable = true;
             clickHandler = () => navigate(`/notice-detail/${post.postId}`);
-            
-            // 날짜 포맷팅
+
+            // 날짜 포맷
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
@@ -164,11 +164,11 @@ const [currentPage, setCurrentPage] = useState(1);
             isClickable = true;
             clickHandler = () => navigate(`/board-detail/${post.id}`);
             displayData = post.nickname;
-          } 
+          }
 
           else if (category === 'cardNews') {
             isClickable = true;
-            clickHandler = () => navigate(`/card-detail/${post.postId}`); 
+            clickHandler = () => navigate(`/card-detail/${post.postId}`);
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
@@ -181,8 +181,8 @@ const [currentPage, setCurrentPage] = useState(1);
           }
 
           return (
-            <li 
-              className={`${styles.postItem} ${isClickable ? styles.postItemClickable : ''}`} 
+            <li
+              className={`${styles.postItem} ${isClickable ? styles.postItemClickable : ''}`}
               key={post.postId || post.id || idx}
               onClick={clickHandler}
             >
@@ -191,7 +191,7 @@ const [currentPage, setCurrentPage] = useState(1);
             </li>
           );
         })}
-      </ul>	
+      </ul>
     );
   };
 
@@ -255,14 +255,11 @@ const [currentPage, setCurrentPage] = useState(1);
                 key={tab.key}
                 className={`${styles.categoryBtn} ${category === tab.key ? styles.categoryBtnActive : ""}`}
                 onClick={() => {
-                  // setCategory(tab.key);
-                  // navigate(`/community?tab=${tab.key}`);
-                  // setCurrentPage(1);
-                  if (category !== tab.key) { // 같은 탭일 땐 다시 요청 안 보냄
-      setCategory(tab.key);
-      navigate(`/community?tab=${tab.key}`);
-      setCurrentPage(1);
-    }
+                  if (category !== tab.key) {
+                    setCategory(tab.key);
+                    navigate(`/community?tab=${tab.key}`);
+                    setCurrentPage(1);
+                  }
                 }}
               >
                 <h3>{tab.label}</h3>
@@ -280,9 +277,10 @@ const [currentPage, setCurrentPage] = useState(1);
               <p>Since: {currentCategoryInfo.since}</p>
             </div>
             <div className={styles.buttonGroup}>
-              {(category === 'board' || category === 'suggestion') && (
-                <button 
-                  className={styles.actionBtn} 
+              {/* 일반 사용자일 경우:,board 또는 suggestion 탭에서만 보임 */}
+              {(isAdmin || (category === 'board' || category === 'suggestion')) && (
+                <button
+                  className={styles.actionBtn}
                   onClick={() => navigate(`/community-write?category=${category}`)}
                 >
                   글쓰기
@@ -305,14 +303,6 @@ const [currentPage, setCurrentPage] = useState(1);
                 </>
               )} */}
             </div>
-            {/* <ul className={styles.postList}>
-              {currentPosts.map((post, idx) => (
-                <li className={styles.postItem} key={idx}>
-                  <span className={styles.postTitle}>{post.title}</span>
-                  <span className={styles.postDate}>{post.date}</span>
-                </li>
-              ))}
-            </ul> */}
 
             {renderContent()}
 

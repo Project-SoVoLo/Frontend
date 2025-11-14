@@ -18,24 +18,40 @@ function BoardDetail() {
   const [isLiking, setIsLiking] = useState(false);
   const [isBookmarking, setIsBookmarking] = useState(false);
 
+  const [newComment, setNewComment] = useState('');
+  const [commentError, setCommentError] = useState(null);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentContent, setEditingCommentContent] = useState('');
+
   const currentUserNickname = localStorage.getItem('userNickname');
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchPostAndComments = async () => {
       try {
         setLoading(true);
+        setError(null);
 
-        const response = await axios.get(`/api/community-posts/${id}`);
-        setPost(response.data);
+        const postResponse = await axios.get(`/api/community-posts/${id}`);
+        const postData = postResponse.data;
+
+        const commentsResponse = await axios.get(`/api/community-posts/${id}/comments`);
+        const commentsData = commentsResponse.data;
+
+        setPost({
+          ...postData,
+          comments: commentsData
+        });
+
       } catch (err) {
-        console.error("커뮤니티 상세 조회 실패:", err);
+        console.error("게시글 또는 댓글 조회 실패:", err);
         setError(err.message || '데이터를 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPost();
+    fetchPostAndComments();
   }, [id]);
 
   const handleEditClick = () => {
@@ -47,7 +63,7 @@ function BoardDetail() {
   };
 
   const handleDelete = async () => {
-    if (isDeleting) return; 
+    if (isDeleting) return;
 
     if (!window.confirm("정말 이 글을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) {
       return;
@@ -60,33 +76,121 @@ function BoardDetail() {
       await axios.delete(`/api/community-posts/${id}`);
 
       alert("게시글이 삭제되었습니다.");
-      navigate('/community?tab=board'); // 목록으로 이동
-
+      navigate('/community?tab=board');
     } catch (err) {
       console.error("게시글 삭제 실패:", err);
-      // API 명세 "본인,관리자" -> 권한 오류가 주 원인일 수 있음
       setError(err.response?.data?.message || '삭제에 실패했습니다. (본인 글이 아니거나, 로그인 정보가 유효하지 않을 수 있습니다.)');
     } finally {
       setIsDeleting(false);
     }
   };
 
+  // 댓글
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    setIsSubmittingComment(true);
+    setCommentError(null);
+
+    const userId = localStorage.getItem('userEmail');
+
+    if (!userId) {
+      setCommentError('댓글을 작성하려면 로그 정보(userId)가 필요합니다. 다시 로그인해 주세요.');
+      setIsSubmittingComment(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post(`/api/community-posts/${id}/comments`, {
+        // userId: userId,
+        // userName: userId,
+        content: newComment
+      });
+
+      console.log("서버로부터 받은 댓글 응답:", response.data);
+
+      setPost(prevPost => ({
+        ...prevPost,
+        comments: [...(prevPost.comments || []), response.data]
+      }));
+      setNewComment('');
+    } catch (err) {
+      console.error("댓글 작성 실패:", err);
+      setCommentError(err.response?.data?.message || '댓글 작성에 실패했습니다.');
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("정말 이 댓글을 삭제하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/community-posts/${id}/comments/${commentId}`);
+
+      setPost(prevPost => ({
+        ...prevPost,
+        comments: prevPost.comments.filter(c => c.commentId !== commentId)
+      }));
+    } catch (err) {
+      console.error("댓글 삭제 실패:", err);
+      alert(err.response?.data?.message || '댓글 삭제에 실패했습니다. (권한 없음)');
+    }
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingCommentId(comment.commentId);
+    setEditingCommentContent(comment.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditingCommentContent('');
+  };
+
+  const handleUpdateComment = async (commentId) => {
+    if (!editingCommentContent.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `/api/community-posts/${id}/comments/${commentId}`,
+        { content: editingCommentContent }
+      );
+
+      const updatedComment = response.data;
+      setPost(prevPost => ({
+        ...prevPost,
+        comments: prevPost.comments.map(c =>
+          c.commentId === updatedComment.commentId ? updatedComment : c
+        )
+      }));
+      handleCancelEdit();
+    } catch (err) {
+      console.error("댓글 수정 실패:", err);
+      alert(err.response?.data?.message || '댓글 수정에 실패했습니다. (권한 없음)');
+    }
+  };
+
+  // 좋아요
   const handleLike = async () => {
     if (isLiking) return;
     setIsLiking(true);
     setError(null);
     try {
-      //const response = await axios.post(`/api/community-posts/{postId}/like`);
       const response = await axios.post(`/api/community-posts/${id}/like`);
       const isNowLiked = response.data;
 
       setPost(prevPost => ({
         ...prevPost,
-        likedByMe: isNowLiked, // API가 반환한 값으로 갱신
-        // 카운트 수동 조절
+        likedByMe: isNowLiked,
         likeCount: isNowLiked
           ? prevPost.likeCount + 1
-          // 0보다 작아지지 않게 방지
           : Math.max(0, prevPost.likeCount - 1)
       }));
     } catch (err) {
@@ -97,22 +201,20 @@ function BoardDetail() {
     }
   };
 
+  // 북마크
   const handleBookmark = async () => {
     if (isBookmarking) return;
     setIsBookmarking(true);
     setError(null);
     try {
-      //const response = await axios.post(`/api/community-posts/{postId}/bookmark`);
       const response = await axios.post(`/api/community-posts/${id}/bookmark`);
-      const isNowBookmarked = response.data; // API가 반환한 true 또는 false
+      const isNowBookmarked = response.data;
 
       setPost(prevPost => ({
         ...prevPost,
-        bookmarkedByMe: isNowBookmarked, // API가 반환한 값으로 갱신
-        // 카운트 수동 조절
+        bookmarkedByMe: isNowBookmarked,
         bookmarkCount: isNowBookmarked
           ? prevPost.bookmarkCount + 1
-          // 0보다 작아지지 않게 방지
           : Math.max(0, prevPost.bookmarkCount - 1)
       }));
     } catch (err) {
@@ -122,7 +224,6 @@ function BoardDetail() {
       setIsBookmarking(false);
     }
   };
-
 
   if (loading) {
     return <div className={styles.contentContainer}><div className={styles.contentActive}>로딩 중...</div></div>;
@@ -153,8 +254,6 @@ function BoardDetail() {
           </div>
 
           <div className={styles.detailContent}>
-            {/* [수정] 'board'는 content가 아닌 blocks 배열을 사용 */}
-            {/* 우선 간단하게 첫 번째 텍스트 블록만 표시 (추후 'Editor.js' 등으로 대체 필요) */}
             {post.blocks && post.blocks.length > 0 ? (
               <p style={{ whiteSpace: 'pre-wrap' }}>
                 {post.blocks.find(block => block.type === 'text')?.content || '(내용 없음)'}
@@ -162,6 +261,126 @@ function BoardDetail() {
             ) : (
               <p>(내용 없음)</p>
             )}
+          </div>
+
+          <hr className={styles.divider} />
+
+          <div className={styles.commentSection}>
+            <h3 className={styles.commentTitle}>댓글 ({post.comments?.length || 0})</h3>
+
+            {/* 댓글 목록 */}
+            <div className={styles.commentList}>
+              {post.comments && post.comments.length > 0 ? (
+                post.comments.map((comment) => (
+                  <div key={comment.commentId} className={styles.commentItem}>
+                    {editingCommentId === comment.commentId ? (
+                      /*  수정 모드 (editCommentId === 현재 댓글 ID) */
+                      <form className={styles.editCommentForm}>
+                        <strong>{comment.nickname || comment.userName || comment.userId} (수정 중)</strong>
+                        <textarea
+                          value={editingCommentContent}
+                          onChange={(e) => setEditingCommentContent(e.target.value)}
+                          className={styles.commentTextarea}
+                          style={{ minHeight: '80px', margin: '10px 0' }}
+                        />
+                        <div className={styles.commentActions}>
+                          <button
+                            type="button"
+                            className={styles.submitBtn}
+                            onClick={() => handleUpdateComment(comment.commentId)}
+                          >
+                            저장
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.cancelBtn}
+                            onClick={handleCancelEdit}
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
+                        <strong>{comment.nickname || comment.userName || comment.userId}</strong>
+                        <p>{comment.content}</p>
+                        <span className={styles.commentDate}>
+                          {comment.updatedAt ? comment.updatedAt.replace('T', ' ').slice(0, 16)
+                            : comment.createdAt ? comment.createdAt.replace('T', ' ').slice(0, 16)
+                              : ''}
+                        </span>
+
+                        {/* 수정/삭제 버튼 (본인 확인) */
+                          // currentUserNickname === comment.nickname && (
+                          //   <div className={styles.commentActions}>
+                          //     <button
+                          //       className={styles.commentActionButton}
+                          //       onClick={() => handleEditComment(comment)}
+                          //     >
+                          //       수정
+                          //     </button>
+                          //     <button
+                          //       className={styles.commentActionButton}
+                          //       onClick={() => handleDeleteComment(comment.commentId)}
+                          //     >
+                          //       삭제
+                          //     </button>
+                          //   </div>
+                          // )
+                        }
+                        {(() => {
+                          console.log('현재 유저:', currentUserNickname, '댓글 작성자:', comment.nickname);
+
+                          if (currentUserNickname === comment.nickname) {
+                            return (
+                              <div className={styles.commentActions}>
+                                <button
+                                  className={styles.commentActionButton}
+                                  onClick={() => handleEditComment(comment)}
+                                >
+                                  수정
+                                </button>
+                                <button
+                                  className={styles.commentActionButton}
+                                  onClick={() => handleDeleteComment(comment.commentId)}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            );
+                          }
+                          return null; // 조건이 맞지 않으면 아무것도 렌더링하지 않음
+                        })()
+                        }
+                      </>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p>작성된 댓글이 없습니다.</p>
+              )}
+            </div>
+
+            <hr className={styles.divider} />
+
+            {/* 새 댓글 작성 */}
+            <form className={styles.commentForm} onSubmit={handleCommentSubmit}>
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="댓글을 입력하세요..."
+                className={styles.commentTextarea}
+                required
+              />
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={isSubmittingComment}
+              >
+                {isSubmittingComment ? '등록 중...' : '댓글 등록'}
+              </button>
+              {commentError && <p className={styles.error}>{commentError}</p>}
+            </form>
           </div>
 
 
@@ -181,7 +400,7 @@ function BoardDetail() {
               <>
                 <button
                   className={styles.submitBtn}
-                  onClick={handleEditClick} 
+                  onClick={handleEditClick}
                 >
                   수정하기
                 </button>
@@ -197,18 +416,15 @@ function BoardDetail() {
             )}
 
             <button
-              // [수정 3] post.liked -> post.likedByMe
               className={`${styles.likeButton} ${post.likedByMe ? styles.liked : ''}`}
               onClick={handleLike}
               disabled={isLiking}
             >
               {post.likedByMe ? '❤️ 좋아요 취소' : '🤍 좋아요'}
-              {/* [수정 3] post.likeCount */}
               <span className={styles.likeCount}>{post.likeCount}</span>
             </button>
 
             <button
-              // [수정 3] post.bookmarked -> post.bookmarkedByMe
               className={styles.bookmarkButton}
               onClick={handleBookmark}
               disabled={isBookmarking}

@@ -73,7 +73,7 @@
     position: relative;
     min-width: 0;
 
-    display: flex; /* 자식 요소(.contentActive)가 높이를 100% 가질 수 있게 */
+    display: flex;
     min-height: 600px;
 } 
 
@@ -320,7 +320,7 @@
 }
 
 
-/* 상세보기 페이지 */
+/* 상세보기 */
 .detailHeader {
   border-bottom: 1px solid #eee;
   padding-bottom: 20px;
@@ -372,7 +372,7 @@
   color: white;
 }
 
-/* 건의사항 상세보기 */
+/* 건의사항 */
 .divider {
   border: none;
   border-top: 1px solid #eee;
@@ -486,7 +486,7 @@
   border-color: #ffd46c;
 }
 
-/* CardNews */
+/* 카드뉴스 */
 .cardImageContainer {
   display: flex;
   flex-direction: column;
@@ -504,7 +504,6 @@
   align-self: center;
 }
 
-
 .detailActions {
   margin-bottom: 24px;
   padding-top: 20px;
@@ -513,7 +512,7 @@
   justify-content: center;
 }
 
-/* 북마크 버튼 */
+/* 북마크 */
 .bookmarkButton {
   padding: 10px 20px;
   font-size: 16px;
@@ -571,4 +570,30 @@
 .bookmarkIconButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* 댓글 */
+.commentActions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.commentActionButton {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.commentActionButton:hover {
+  background: #e0e0e0;
+}
+
+.editCommentForm {
+  width: 100%;
 }

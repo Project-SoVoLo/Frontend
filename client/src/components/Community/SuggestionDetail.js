@@ -21,14 +21,18 @@ function SuggestionDetail() {
     setLoading(true);
     setError(null);
 
+    const userId = localStorage.getItem('userEmail');
+
     try {
       const response = await axios.post(`/api/inquiry/${id}/read`, {
-        password: password
+        password: password,
+        userId: userId || null
       });
       setPost(response.data);
+      console.log(response.data)
     } catch (err) {
       console.error("건의사항 조회 실패:", err);
-      setError('비밀번호가 올바르지 않거나 게시물을 찾을 수 없습니다.');
+      setError(err.response?.data?.message || '비밀번호가 틀렸거나 접근 권한이 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -39,12 +43,17 @@ function SuggestionDetail() {
       return;
     }
 
+    const userId = localStorage.getItem('userEmail');
+
     setLoading(true);
     setError(null);
 
     try {
       await axios.delete(`/api/inquiry/${id}`, {
-        data: { password: password }
+        data: { 
+          password: password,
+          userId: userId || null
+         }
       });
 
       alert("게시글이 삭제되었습니다.");
@@ -52,7 +61,7 @@ function SuggestionDetail() {
 
     } catch (err) {
       console.error("게시글 삭제 실패:", err);
-      setError(err.response?.data?.message || '삭제에 실패했습니다. 다시 시도해 주세요.');
+      setError(err.response?.data?.message || '삭제에 실패했습니다. 비밀번호가 틀렸거나 권한이 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -68,18 +77,19 @@ function SuggestionDetail() {
     const userId = localStorage.getItem('userEmail');
 
     if (!userId) {
-      setCommentError('댓글을 작성하려면 로그 정보(userId, userName)가 필요합니다. 다시 로그인해 주세요.');
+      setCommentError('댓글을 작성하려면 로그 정보(userId)가 필요합니다. 다시 로그인해 주세요.');
       setIsSubmittingComment(false);
       return;
     }
 
-
     try {
-      const response = await axios.post(`/api/inquiry/${id}/comments`, {
-        userId: userId,
+      const response = await axios.post(`/api/inquiry/${id}/comments`,
+        // {userId: userId, content: newComment},
+        // {headers: {Authorization: `Bearer ${authToken}`}}
+       { userId: userId,
         userName: userId,
-        content: newComment
-      });
+        content: newComment }
+      );
 
       setPost(prevPost => ({
         ...prevPost,
@@ -143,8 +153,11 @@ function SuggestionDetail() {
     <div className={styles.contentContainer}>
       <div className={styles.contentActive}>
         <div className={styles.detailHeader}>
-          <h2 className={styles.detailTitle}>{post.title}</h2>
-        </div>
+            <h2 className={styles.detailTitle}>{post.title}</h2>
+            <div className={styles.detailMeta}>
+              <span>작성자: {post.author}</span>
+            </div>
+          </div>
 
         <div className={styles.detailContent}>
           <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
@@ -155,7 +168,7 @@ function SuggestionDetail() {
         <div className={styles.commentSection}>
           <h3 className={styles.commentTitle}>댓글 ({post.comments?.length || 0})</h3>
 
-          {/* 댓글 목록 렌더링 */}
+          {/* 댓글 목록 */}
           <div className={styles.commentList}>
             {post.comments && post.comments.length > 0 ? (
               post.comments.map((comment) => (
@@ -174,7 +187,7 @@ function SuggestionDetail() {
 
           <hr className={styles.divider} />
 
-          {/* 새 댓글 작성 폼 */}
+          {/* 새 댓글 작성 */}
           <form className={styles.commentForm} onSubmit={handleCommentSubmit}>
             <textarea
               value={newComment}

@@ -4,9 +4,6 @@ import { User, LayoutGrid, Heart, Bookmark } from 'lucide-react';
 import axios from '../../api/axios';
 import styles from './Profile.module.css';
 
-// --- 서브 컴포넌트들 ---
-// (테일윈드 클래스 제거, CSS 모듈 스타일 적용)
-
 const LoadingSpinner = () => (
   <div className={styles.loadingSpinner}>
     <div className={styles.spinner}></div>
@@ -84,25 +81,24 @@ const ProfileContent = ({ profile }) => {
 
 };
 
-const PostList = ({ posts, navigate }) => (
-  <ul className={styles.postList}>
-    {posts.length === 0 ? (
-      <p className={styles.noPosts}>작성한 글이 없습니다.</p>
-    ) : (
-      posts.map(post => (
-        <li
-          key={post.id}
-          className={`${styles.postItem} ${styles.postItemClickable}`}
-          // (수정) '커뮤니티 글' API는 'id'를 반환합니다.
-          onClick={() => navigate(`/board-detail/${post.id}`)} 
-        >
-          <span className={styles.postTitle}>{post.title}</span>
-          <span className={styles.postDate}>{post.date}</span>
-        </li>
-      ))
-    )}
-  </ul>
-);
+// const PostList = ({ posts, navigate }) => (
+//   <ul className={styles.postList}>
+//     {posts.length === 0 ? (
+//       <p className={styles.noPosts}>작성한 글이 없습니다.</p>
+//     ) : (
+//       posts.map(post => (
+//         <li
+//           key={post.id}
+//           className={`${styles.postItem} ${styles.postItemClickable}`}
+//           onClick={() => navigate(`/board-detail/${post.id}`)} 
+//         >
+//           <span className={styles.postTitle}>{post.title}</span>
+//           <span className={styles.postDate}>{post.date}</span>
+//         </li>
+//       ))
+//     )}
+//   </ul>
+// );
 
 const ListSection = ({ title, items, navigate }) => {
   if (items.length === 0) {
@@ -119,25 +115,24 @@ const ListSection = ({ title, items, navigate }) => {
       <ul className={styles.postList}>
         {items.map(item => {
           let path = '/board-detail/';
-          // (수정) '커뮤니티'만 item.id, 나머지는 item.postId를 사용합니다.
           let idToUse = item.id; 
 
           if (item.postType === 'notice') {
             path = '/notice-detail/';
-            idToUse = item.postId; // (수정) 공지사항은 postId 사용
+            idToUse = item.postId;
           } else if (item.postType === 'cardNews') {
             path = '/card-detail/';
-            idToUse = item.postId; // (수정) 카드뉴스도 postId 사용
+            idToUse = item.postId;
           }
           
-          // (수정) key도 두 ID 중 하나를 사용하도록 변경
+          // key는 두 ID 중 하나를 사용
           const key = item.id || item.postId; 
 
           return (
             <li
               key={key}
               className={`${styles.postItem} ${styles.postItemClickable}`}
-              // (수정) 동적으로 결정된 path와 idToUse를 사용
+              // 동적으로 결정된 path와 idToUse를 사용
               onClick={() => navigate(`${path}${idToUse}`)}
             >
               <span className={styles.postTitle}>{item.title}</span>
@@ -157,12 +152,8 @@ const LikedOrBookmarkedList = ({ items, navigate, tabType }) => {
     item => item.postType === 'community' || item.postType === 'board' || !item.postType
   );
   const notices = items.filter(item => item.postType === 'notice');
-  const cardNews = items.filter(item => item.postType === 'cardNews');
-
-  if (items.length === 0) {
-    return <p className={styles.noPosts}>목록이 비어있습니다.</p>;
-  }
-
+  const cardNews = items.filter(item => item.postType === 'card');
+  
   return (
     <div className={styles.sectionContainer}>
       {tabType === 'likes' && (
@@ -174,19 +165,18 @@ const LikedOrBookmarkedList = ({ items, navigate, tabType }) => {
       )}
 
       <ListSection
-        title="커뮤니티 글"
+        title="커뮤니티"
         items={communityPosts}
         navigate={navigate}
       />
 
-      {/* (수정) '카드뉴스'는 '좋아요'와 '북마크' 탭 모두에 표시됩니다.
-        (이전 코드: {tabType === 'bookmarks' && ...}) 
-      */}
-      <ListSection
+      {tabType === 'bookmarks' && (
+        <ListSection
         title="카드뉴스"
         items={cardNews}
         navigate={navigate}
       />
+      )}      
     </div>
   );
 };
@@ -204,8 +194,6 @@ function Profile() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-
-  // useEffect 훅 (데이터 로딩 로직)은 기존과 동일합니다.
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -228,9 +216,6 @@ function Profile() {
         setLoading(false);
         return;
       }
-      if (activeTab === 'posts' && posts.length > 0) return;
-      if (activeTab === 'likes' && likes.length > 0) return;
-      if (activeTab === 'bookmarks' && bookmarks.length > 0) return;
 
       setLoading(true);
       setError(null);
@@ -249,6 +234,7 @@ function Profile() {
           case 'bookmarks':
             response = await axios.get('/api/mypage/bookmarks');
             setBookmarks(response.data || []);
+            console.log(response.data);
             break;
           default:
             break;
@@ -261,7 +247,7 @@ function Profile() {
     };
 
     loadTabData();
-  }, [activeTab, posts.length, likes.length, bookmarks.length]);
+  }, [activeTab]);
 
   const renderContent = () => {
     if (loading) return <LoadingSpinner />;
@@ -271,13 +257,20 @@ function Profile() {
       case 'profile':
         return <ProfileContent profile={profile} />;
       case 'posts':
-        return <PostList posts={posts} navigate={navigate} />;
+        //return <PostList posts={posts} navigate={navigate} />;
+        return (
+          <LikedOrBookmarkedList
+            items={posts}
+            navigate={navigate}
+            tabType="posts"
+          />
+        );
       case 'likes':
         return (
           <LikedOrBookmarkedList
             items={likes}
             navigate={navigate}
-            tabType="likes" // '좋아요' 탭임을 명시
+            tabType="likes"
           />
         );
       case 'bookmarks':
@@ -285,7 +278,7 @@ function Profile() {
           <LikedOrBookmarkedList
             items={bookmarks}
             navigate={navigate}
-            tabType="bookmarks" // '북마크' 탭임을 명시
+            tabType="bookmarks"
           />
         );
       default:
@@ -294,7 +287,6 @@ function Profile() {
   };
 
   return (
-    // 2. 래퍼 div들을 CSS 모듈 클래스로 변경
     <div className={styles.container}>
       <div className={styles.profileContainer}>
         <header className={styles.header}>
@@ -302,7 +294,6 @@ function Profile() {
             <LoadingSpinner />
           ) : profile ? (
             <>
-              {/* 임시 아바타 (닉네임 첫 글자) */}
               <div className={styles.avatar}>
                 {profile.nickname.charAt(0)}
               </div>

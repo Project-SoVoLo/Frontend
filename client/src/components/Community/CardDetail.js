@@ -7,6 +7,7 @@ import bookmarkEmptyIcon from '../../Images/bookmark_empty.png';
 import bookmarkFilledIcon from '../../Images/bookmark_filled.png';
 
 function CardDetail() {
+  // 게시글 PostId
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -33,13 +34,15 @@ function CardDetail() {
     fetchPost();
   }, [id]);
 
+  // 북마크 
   const handleBookmark = async () => {
     if (isBookmarking) return;
     setIsBookmarking(true);
-
+    
     try {
       const response = await axios.post(`/api/card/${id}/bookmark`);
 
+      console.log('[북마크 성공] 서버 응답:', response.data);
       setPost(response.data);
       setError(null);
     } catch (err) {
@@ -61,7 +64,6 @@ function CardDetail() {
     return <div className={styles.contentContainer}>게시글을 찾을 수 없습니다.</div>;
   }
 
-  // 날짜 포맷팅 (YYYY-MM-DD HH:MM)
   const formattedDate = post.date
     ? post.date.replace('T', ' ').slice(0, 16)
     : '날짜 없음';
@@ -69,52 +71,52 @@ function CardDetail() {
   return (
     <div className={styles.contentContainer}>
       <div className={styles.contentActive}>
-      <div className={styles.detailHeader}>
-        <h2 className={styles.detailTitle}>{post.title}</h2>
-        <div className={styles.detailMeta}>
-          <span>작성자: {post.adminId}</span>
-          <span>작성일: {formattedDate}</span>
+        <div className={styles.detailHeader}>
+          <h2 className={styles.detailTitle}>{post.title}</h2>
+          <div className={styles.detailMeta}>
+            <span>작성자: {post.adminId}</span>
+            <span>작성일: {formattedDate}</span>
+          </div>
+        </div>
+        <div className={styles.detailContent}>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
+        </div>
+
+        <div className={styles.cardImageContainer}>
+          {post.imageUrls && post.imageUrls.map((imgUrl, index) => (
+            <img
+              key={index}
+              src={`${process.env.REACT_APP_API_BASE_URL}${imgUrl}`}
+              alt={`카드뉴스 이미지 ${index + 1}`}
+              className={styles.cardImage}
+            />
+          ))}
+        </div>
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <hr className={styles.divider} />
+
+        <div className={styles.Btngroup}>
+          <button
+            className={styles.submitBtn}
+            onClick={() => navigate('/community?tab=cardNews')}
+          >
+            목록으로
+          </button>
+          <button
+            className={`${styles.bookmarkButton} ${post.bookmarked ? styles.bookmarked : ''}`}
+            onClick={handleBookmark}
+            disabled={isBookmarking}
+          >
+            <img
+              src={post.bookmarked ? bookmarkFilledIcon : bookmarkEmptyIcon}
+              alt="북마크 아이콘"
+              className={styles.bookmarkIcon}
+            />
+          </button>
         </div>
       </div>
-      <div className={styles.detailContent}>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
-      </div>
-
-      <div className={styles.cardImageContainer}>
-        {post.imageUrls && post.imageUrls.map((imgUrl, index) => (
-          <img
-            key={index}
-            src={`${process.env.REACT_APP_API_BASE_URL}${imgUrl}`}
-            alt={`카드뉴스 이미지 ${index + 1}`}
-            className={styles.cardImage}
-          />
-        ))}
-      </div>
-
-      {error && <p className={styles.error}>{error}</p>}
-
-      <hr className={styles.divider} />
-
-      <div className={styles.Btngroup}>
-        <button
-          className={styles.submitBtn}
-          onClick={() => navigate('/community?tab=cardNews')}
-        >
-          목록으로
-        </button>
-        <button
-          className={`${styles.bookmarkButton} ${post.bookmarked ? styles.bookmarked : ''}`}
-          onClick={handleBookmark}
-          disabled={isBookmarking}
-        >
-          <img
-            src={post.bookmarked ? bookmarkFilledIcon : bookmarkEmptyIcon}
-            alt="북마크 아이콘"
-            className={styles.bookmarkIcon}
-          />
-        </button>
-      </div>
-    </div>
     </div>
   );
 }
