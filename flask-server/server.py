@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from io import BytesIO
+import os
 import openai
 
 app = Flask(__name__)
 CORS(app)
 
-openai.api_key = "API_KEY"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route('/api/whisper', methods=['POST', 'OPTIONS'])
 def transcribe():
@@ -30,4 +31,4 @@ def transcribe():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)

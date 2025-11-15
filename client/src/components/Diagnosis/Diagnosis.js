@@ -31,18 +31,8 @@ function Diagnosis() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-  axios.get("http://localhost:8080/api/diagnosis/types", {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
-    .then(res => {
-      const data = res.data;
-      const mapped = data.map(type => ({
-        key: type,
-        label: typeMeta[type]?.label || type,
-        description: typeMeta[type]?.description || "",
-      }));
-      setTests(mapped);
-      if (mapped.length > 0) setSelectedTest(mapped[0].key);
+    axios.get("http://localhost:8080/api/diagnosis/types", {
+      headers: { 'Authorization': `Bearer ${token}` }
     })
     .catch(err => {
       alert("진단 유형 목록을 불러오지 못했습니다.");
@@ -76,14 +66,29 @@ useEffect(() => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (answers.some(ans => ans === null)) {
       alert("모든 문항에 답변해 주세요.");
       return;
     }
-    // 결과 제출 API 연동 필요!! 나중 수정 !!
-    alert("자가진단이 제출되었습니다.");
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/diagnosis",
+        {
+          type: selectedTest,
+          answers: answers
+        },
+        {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
+      alert(
+        `자가진단이 제출되었습니다.\n점수: ${response.data.diagnosisScore}`
+      );
+    } catch (err) {
+      alert("제출에 실패했습니다.");
+    }
   };
 
   return (
@@ -119,11 +124,13 @@ useEffect(() => {
                   <form onSubmit={handleSubmit}>
                     <ul className={styles.postList}>
                       {questions.map((q, idx) => (
-                        <li className={styles.postItem} key={q.questionId}>
-                          <div className={styles.postTitle}>{q.content}</div>
-                          <div style={{ marginTop: "10px", marginBottom: "15px" }}>
+                        <li className={styles.postItem} key={q.id}>
+                          <div className={styles.postTitle}>
+                            {q.number}. {q.questionText}
+                          </div>
+                          <div className={styles.choicesRow} style={{ marginTop: "10px", marginBottom: "15px" }}>
                             {choices.map(choice => (
-                              <label key={choice.value} style={{ marginRight: "15px" }}>
+                              <label key={choice.value} className={styles.choiceLabel}>
                                 <input
                                   type="radio"
                                   name={`question_${idx}`}
@@ -138,13 +145,15 @@ useEffect(() => {
                         </li>
                       ))}
                     </ul>
-                    <button
-                      type="submit"
-                      className={styles.actionBtn}
-                      style={{ marginTop: "20px" }}
-                    >
-                      제출
-                    </button>
+                    <div className={styles.submitRow}>
+                      <button
+                        type="submit"
+                        className={styles.actionBtn}
+                        style={{ marginTop: "20px" }}
+                      >
+                        제출
+                      </button>
+                    </div>
                   </form>
                 )}
               </>
