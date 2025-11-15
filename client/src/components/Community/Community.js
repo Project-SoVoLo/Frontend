@@ -10,7 +10,6 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
     pageNumbers.push(i);
   }
 
-  // 게시글이 1페이지 이하면 페이지네이션을 숨김
   if (pageNumbers.length <= 1) {
     return null;
   }
@@ -19,13 +18,13 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
     <nav>
       <ul className={styles.pagination}>
         {pageNumbers.map(number => (
-          <li 
-            key={number} 
+          <li
+            key={number}
             className={`${styles.pageItem} ${currentPage === number ? styles.pageItemActive : ''}`}
           >
-            <a 
-              onClick={() => paginate(number)} 
-              href="#!" // href="#"는 페이지 맨 위로 이동하므로 ! 사용
+            <a
+              onClick={() => paginate(number)}
+              href="#!"
               className={styles.pageLink}
             >
               {number}
@@ -37,7 +36,6 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, currentPage }) => {
   );
 };
 
-
 function Community() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -48,15 +46,17 @@ function Community() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(4); // 한 페이지에 4개씩 표시
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(4);
 
+  const userRole = localStorage.getItem('userRole');
+  const isAdmin = userRole === 'ADMIN';
 
   useEffect(() => {
     const newTab = searchParams.get('tab');
     if (newTab && newTab !== category) {
       setCategory(newTab);
-      setCurrentPage(1); // 탭이 URL로 변경될 때도 페이지 1로
+      setCurrentPage(1);
     }
   }, [searchParams, category]);
 
@@ -90,7 +90,7 @@ const [currentPage, setCurrentPage] = useState(1);
 
         const response = await axios.get(apiUrl);
 
-        let data = response.data; 
+        let data = response.data;
 
         if (category !== 'suggestion' && Array.isArray(data)) {
           data.sort((a, b) => {
@@ -99,7 +99,6 @@ const [currentPage, setCurrentPage] = useState(1);
             return dateB - dateA;
           });
         }
-
         setPosts(data);
       } catch (err) {
         setError(err.message || '데이터를 불러오는 중 오류가 발생했습니다.');
@@ -107,7 +106,6 @@ const [currentPage, setCurrentPage] = useState(1);
         setLoading(false);
       }
     };
-
     fetchPosts();
   }, [category]);
 
@@ -127,22 +125,20 @@ const [currentPage, setCurrentPage] = useState(1);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    // posts (전체) 배열에서 현재 페이지에 해당하는 4개만 잘라냄
     const currentPostsOnPage = posts.slice(indexOfFirstPost, indexOfLastPost);
     if (currentPostsOnPage.length === 0 && posts.length > 0) {
-      // 이 경우는 2페이지에 데이터가 0개일 때 발생 -> 1페이지로 강제 이동
       setCurrentPage(1);
       return null;
     }
 
     if (posts.length === 0) {
-        return <div className={styles.noPosts}>게시글이 없습니다.</div>;
+      return <div className={styles.noPosts}>게시글이 없습니다.</div>;
     }
 
     return (
       <ul className={styles.postList}>
         {currentPostsOnPage.map((post, idx) => {
-          
+
           let displayData = '';
           let isClickable = false;
           let clickHandler = undefined;
@@ -152,35 +148,41 @@ const [currentPage, setCurrentPage] = useState(1);
           if (category === 'suggestion') {
             isClickable = true;
             clickHandler = () => navigate(`/suggestion-detail/${post.id}`);
-            displayData = post.nickname;
-          } 
+            displayData = post.author;
+          }
           else if (category === 'notice') {
             isClickable = true;
             clickHandler = () => navigate(`/notice-detail/${post.postId}`);
-            
-            // 날짜 포맷팅
-            if (dateString) {
-              displayData = dateString.replace('T', ' ').slice(0, 16);
-            }
-          } 
-          else if (category === 'cardNews') {
-            isClickable = true;
-            // API 명세서(상세)를 보니 ID가 'postId'입니다.
-            clickHandler = () => navigate(`/card-detail/${post.postId}`); 
+
+            // 날짜 포맷
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
           }
+
+          else if (category === 'board') {
+            isClickable = true;
+            clickHandler = () => navigate(`/board-detail/${post.id}`);
+            displayData = post.nickname;
+          }
+
+          else if (category === 'cardNews') {
+            isClickable = true;
+            clickHandler = () => navigate(`/card-detail/${post.postId}`);
+            if (dateString) {
+              displayData = dateString.replace('T', ' ').slice(0, 16);
+            }
+          }
+
           else {
-            // 그 외 (현재 오류나는 'board' 등)
             if (dateString) {
               displayData = dateString.replace('T', ' ').slice(0, 16);
             }
           }
 
           return (
-            <li 
-              className={`${styles.postItem} ${isClickable ? styles.postItemClickable : ''}`} 
+            <li
+              className={`${styles.postItem} ${isClickable ? styles.postItemClickable : ''}`}
               key={post.postId || post.id || idx}
               onClick={clickHandler}
             >
@@ -189,7 +191,7 @@ const [currentPage, setCurrentPage] = useState(1);
             </li>
           );
         })}
-      </ul>	
+      </ul>
     );
   };
 
@@ -253,9 +255,11 @@ const [currentPage, setCurrentPage] = useState(1);
                 key={tab.key}
                 className={`${styles.categoryBtn} ${category === tab.key ? styles.categoryBtnActive : ""}`}
                 onClick={() => {
-                  setCategory(tab.key);
-                  navigate(`/community?tab=${tab.key}`);
-                  setCurrentPage(1);
+                  if (category !== tab.key) {
+                    setCategory(tab.key);
+                    navigate(`/community?tab=${tab.key}`);
+                    setCurrentPage(1);
+                  }
                 }}
               >
                 <h3>{tab.label}</h3>
@@ -273,7 +277,15 @@ const [currentPage, setCurrentPage] = useState(1);
               <p>Since: {currentCategoryInfo.since}</p>
             </div>
             <div className={styles.buttonGroup}>
-              <button className={styles.actionBtn} onClick={() => navigate(`/community-write?category=${category}`)}>글쓰기</button>
+              {/* 일반 사용자일 경우:,board 또는 suggestion 탭에서만 보임 */}
+              {(isAdmin || (category === 'board' || category === 'suggestion')) && (
+                <button
+                  className={styles.actionBtn}
+                  onClick={() => navigate(`/community-write?category=${category}`)}
+                >
+                  글쓰기
+                </button>
+              )}
               {/* {category === "cardNews" ? (
                 <>
                   <button className={styles.actionBtn}>인스타</button>
@@ -291,14 +303,6 @@ const [currentPage, setCurrentPage] = useState(1);
                 </>
               )} */}
             </div>
-            {/* <ul className={styles.postList}>
-              {currentPosts.map((post, idx) => (
-                <li className={styles.postItem} key={idx}>
-                  <span className={styles.postTitle}>{post.title}</span>
-                  <span className={styles.postDate}>{post.date}</span>
-                </li>
-              ))}
-            </ul> */}
 
             {renderContent()}
 

@@ -3,68 +3,93 @@ import axios from '../../api/axios';
 import Chart from 'chart.js/auto';
 import './Mypage.css';
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  return dateStr.split('T')[0];
+};
+
 function EmotionChart() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [groupedData, setGroupedData] = useState({});
+  
+  const [activeTab, setActiveTab] = useState(null);
   const canvasRef = useRef(null);
   const chartInstance = useRef(null);
-  const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/mypage/chat-summaries')
+    setLoading(true);
+    axios.get('/api/diagnosis/history')
       .then(res => {
-        console.log('API 응답 데이터:', res.data);
-        const filtered = res.data.filter(item => item.phqScore !== null && item.date);
-
-        // 날짜별 감정점수 평균 계산
-        const grouped = filtered.reduce((acc, item) => {
-          const date = item.date.split('T')[0];
-          if (!acc[date]) {
-            acc[date] = { total: 0, count: 0 };
-          }
-          acc[date].total += item.phqScore;
-          acc[date].count += 1;
+        const data = res.data || [];
+        
+        const grouped = data.reduce((acc, item) => {
+          const key = item.diagnosisType || "기타";
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(item);
           return acc;
         }, {});
-
-        const averaged = Object.entries(grouped).map(([date, { total, count }]) => ({
-          date,
-          avgScore: total / count,
-        }));
-
-        const sorted = averaged.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const last10 = sorted.slice(-10);
-
-        setRecords(last10);
+        setGroupedData(grouped);
+        
+        if (Object.keys(grouped).length > 0) {
+          setActiveTab(Object.keys(grouped)[0]);
+        }
       })
       .catch(err => {
-        console.error('상담 요약 API 오류:', err);
+        console.error('진단 내역 API 오류:', err);
+        setError('데이터를 불러오는 데 실패했습니다.');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const ctx = canvasRef.current.getContext('2d');
-
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+    if (!canvasRef.current || !activeTab || !groupedData[activeTab]) {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+        chartInstance.current = null;
+      }
+      return;
     }
 
-    const labels = records.map(d => {
-      const date = new Date(d.date);
+    const ctx = canvasRef.current.getContext('2d');
+    const items = groupedData[activeTab];
+
+    // 1. 현재 탭의 날짜별 점수 맵 생성 (중복 날짜 처리)
+    const scoreMap = {};
+    items.forEach(item => {
+      const date = formatDate(item.diagnosisDate);
+      scoreMap[date] = Number(item.diagnosisScore) || 0;
+    });
+
+    // 2. 현재 탭의 고유한 날짜(key)만 추출하여 정렬 (이 탭의 고유 X축)
+    const tabDates = Object.keys(scoreMap).sort((a, b) => new Date(a) - new Date(b));
+
+    // 3. 정렬된 날짜(tabDates) 순서대로 점수 배열(dataArr) 생성
+    const dataArr = tabDates.map(date => scoreMap[date]);
+
+    // 4. 정렬된 날짜(tabDates)로 X축 레이블 생성
+    const labels = tabDates.map(d => {
+      const date = new Date(d);
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${month}/${day}`;
     });
 
-    const data = records.map(d => d.avgScore);
+    // 기존 차트 파괴
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
 
+    // 새 차트 생성
     chartInstance.current = new Chart(ctx, {
       type: 'line',
       data: {
-        labels,
+        labels: labels,
         datasets: [{
-          label: '감정 점수',
-          data,
+          label: '진단 점수',
+          data: dataArr,
           borderColor: 'blue',
           backgroundColor: 'rgba(0, 0, 255, 0.1)',
           fill: true,
@@ -74,43 +99,27 @@ function EmotionChart() {
       options: {
         responsive: true,
         animation: false,
-        layout: {
-          padding: {
-            left: 20,
-            right: 10,
-            top: 10,
-            bottom: 10
-          }
-        },
         scales: {
           y: {
             beginAtZero: true,
             min: 0,
-            max: 27,
             title: {
               display: true,
-              text: 'PHQ 점수',
+              text: '진단 점수',
             }
           },
           x: {
             offset: true,
             title: {
               display: true,
-              text: '상담 날짜',
+              text: '진단 날짜',
             }
           }
         },
         plugins: {
           title: {
-            display: records.length === 0,
-            text: '감정 데이터가 없습니다.',
-            padding: {
-              top: 10,
-              bottom: 20
-            },
-            font: {
-              size: 14
-            }
+            display: !items || items.length === 0,
+            text: '데이터가 없습니다.',
           }
         }
       },
@@ -122,11 +131,37 @@ function EmotionChart() {
         chartInstance.current = null;
       }
     };
-  }, [records]);
+  }, [activeTab, groupedData]);
+
+  if (loading) {
+    return <div className="tab-content active"><p>로딩 중입니다...</p></div>;
+  }
+
+  if (error) {
+    return <div className="tab-content active"><p>{error}</p></div>;
+  }
+
+  const diagnosisTypes = Object.keys(groupedData);
+
+  if (diagnosisTypes.length === 0) {
+    return <div className="tab-content active"><p>진단 내역이 없습니다.</p></div>;
+  }
 
   return (
     <div className="tab-content active">
-      <div className="emotion-chart">
+      <nav className="emotion-chart-nav">
+        {diagnosisTypes.map(type => (
+          <button
+            key={type}
+            className={`emotion-tab-button ${activeTab === type ? 'emotion-tab-button-active' : ''}`}
+            onClick={() => setActiveTab(type)}
+          >
+            {type}
+          </button>
+        ))}
+      </nav>
+
+      <div className="emotion-chart-content">
         <canvas ref={canvasRef}></canvas>
       </div>
     </div>

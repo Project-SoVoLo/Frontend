@@ -34,38 +34,31 @@ function Diagnosis() {
     axios.get("http://localhost:8080/api/diagnosis/types", {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-      .then(res => {
-        const data = res.data;
-        const mapped = data.map(type => ({
-          key: type,
-          label: typeMeta[type]?.label || type,
-          description: typeMeta[type]?.description || "",
-        }));
-        setTests(mapped);
-        if (mapped.length > 0) setSelectedTest(mapped[0].key);
-      })
-      .catch(err => {
-        alert("진단 유형 목록을 불러오지 못했습니다.");
-      });
-  }, [token]);
+    .catch(err => {
+      alert("진단 유형 목록을 불러오지 못했습니다.");
+    });
+}, [token]);
 
-  useEffect(() => {
-    if (!selectedTest) return;
-    setLoading(true);
-    axios.get(`http://localhost:8080/api/diagnosis/questions/${selectedTest}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+
+useEffect(() => {
+  if (!selectedTest || !token) return;
+  setLoading(true);
+  axios.get(`http://localhost:8080/api/diagnosis/questions/${selectedTest}`, {
+  headers: { 'Authorization': `Bearer ${token}` }
+})
+
+    .then(res => {
+      const data = res.data;
+      setQuestions(data);
+      setAnswers(Array(data.length).fill(null));
+      setLoading(false);
     })
-      .then(res => {
-        const data = res.data;
-        setQuestions(data);
-        setAnswers(Array(data.length).fill(null));
-        setLoading(false);
-      })
-      .catch(err => {
-        alert("문항을 불러오지 못했습니다.");
-        setLoading(false);
-      });
-  }, [selectedTest, token]);
+    .catch(err => {
+      alert("문항을 불러오지 못했습니다.");
+      setLoading(false);
+    });
+}, [selectedTest, token]);
+
 
   const handleAnswerChange = (questionIdx, value) => {
     setAnswers(prev =>

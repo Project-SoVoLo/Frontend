@@ -86,3 +86,22 @@
   padding: 0;
   margin-top: 5px;
 }
+
+/* 관리자 체크박스 */
+.admin-checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: -10px 0 10px;
+  width: 100%;
+}
+
+.admin-checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 5px;
+}
+
+.admin-checkbox-container label {
+  font-size: 0.9rem;
+  color: #555;
+}

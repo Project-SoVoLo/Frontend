@@ -1,0 +1,210 @@
+/*
+ * Profile.module.css
+ * Community.module.css의 스타일을 기반으로 작성
+ */
+
+/* 전체 페이지 컨테이너 (Community.js와 유사) */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 40px 24px;
+  box-sizing: border-box;
+}
+
+/* 메인 흰색 박스 (Community.js의 contentContainer와 유사) */
+.profileContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* 프로필 헤더 (아바타, 닉네임) */
+.header {
+  padding: 32px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #ffd46c; /* Community.js의 포인트 컬러 */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.userInfo h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.userInfo p {
+  font-size: 16px;
+  color: #777;
+  margin: 4px 0 0 0;
+}
+
+/* 탭 네비게이션 */
+.nav {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  background-color: #fcfcfc;
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #666;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+/* Community.js의 활성 탭 스타일 적용 */
+.tabButtonActive {
+  color: #333;
+  border-bottom-color: #ffd46c; /* 포인트 컬러 */
+}
+
+.tabIcon {
+  width: 18px;
+  height: 18px;
+  color: #888;
+  transition: color 0.3s ease;
+}
+.tabButton:hover .tabIcon {
+  color: #555;
+}
+.tabButtonActive .tabIcon {
+  color: #ffd46c; /* 포인트 컬러 */
+}
+
+/* 메인 콘텐츠 영역 */
+.contentArea {
+  padding: 32px;
+}
+
+/* 로딩 스피너 */
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid #ffd46c; /* 포인트 컬러 */
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 오류 메시지 */
+.errorMessage {
+  padding: 16px;
+  background-color: #fff4f4;
+  color: #d93025;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+/* 프로필 상세 정보 */
+.profileContent {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.infoBox {
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+.infoBox span:first-child {
+  font-size: 13px;
+  color: #777;
+  display: block;
+}
+.infoBox span:last-child {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 게시글 목록 (Community.module.css의 .postItem 스타일 적용) */
+.postList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.postItem {
+  background-color: #f8f9fa;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.postTitle {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+.postDate {
+  font-size: 14px;
+  color: #999;
+}
+.noPosts {
+  text-align: center;
+  color: #888;
+  padding: 20px 0;
+}
+
+.postItemClickable {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.postItemClickable:hover {
+  /* .postItem의 기본 배경색이 #f8f9fa이므로, 
+     호버 시에는 조금 더 짙은 색으로 변경 */
+  background-color: #e9ecef;
+}

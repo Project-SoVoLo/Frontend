@@ -1,0 +1,27 @@
+.meditation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 110px 20px;
+  min-height: 100vh;
+}
+
+.meditation-title {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 50px;  
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 40px 30px; 
+  justify-items: center;
+}
+
+.video-grid iframe {
+  width: 500px;  
+  height: 300px;
+  border-radius: 12px;
+  border: none;
+}

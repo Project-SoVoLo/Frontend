@@ -34,7 +34,7 @@ function Navbar() {
       { text: "자가진단", to: "/diagnosis" },
     ],
     [
-      { text: "명상", to: "/hospital_information" },
+      { text: "명상", to: "/meditation" },
       { text: "치료센터/병원위치", to: "/location" },
     ],
     [
