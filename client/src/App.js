@@ -22,6 +22,7 @@ import LoginExtraInfo from "./components/LoginExtraInfo/LoginExtraInfo.js";
 import KakaoCallback from "./components/Login/KaKaoCallback.js";
 import Location from "./components/Location/Location.js";
 import Profile from "./components/Mypage/Profile.js";
+import Meditation from "./components/Mindcare/Meditation.js";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="/kakao/callback" element={<KakaoCallback />} />
             <Route path="/location" element={<Location />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/meditation" element={<Meditation />} />
           </Routes>
         </main>
         <Footer />
