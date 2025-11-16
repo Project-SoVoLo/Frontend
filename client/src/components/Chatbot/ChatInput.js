@@ -25,7 +25,7 @@ export default function ChatInput({ onSend }) {
 
     try {
       const response = await axios.post(
-        "http://54.180.142.67:5002/api/whisper",
+        "http://13.125.43.47:5002/api/whisper",
         formData,
         {
           headers: {
