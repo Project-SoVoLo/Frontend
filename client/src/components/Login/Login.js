@@ -97,7 +97,7 @@ function Login() {
   };
 
   const handleKakaoLogin = () => {
-    window.location.href = 'http://localhost:8080/api/oauth/kakao/login';
+    window.location.href = 'http://54.180.142.67:8080/api/oauth/kakao/login';
   };
 
   return (

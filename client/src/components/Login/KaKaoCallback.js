@@ -20,7 +20,7 @@ function KakaoCallback() {
 
     axios.post('/api/oauth/kakao/token', {
       code: code,
-      redirect_uri: 'http://localhost:3000/kakao/callback'
+      redirect_uri: 'http://54.180.142.67:3000/kakao/callback'
     })
     .then(response => {
       const { token, nextStep, userEmail } = response.data;

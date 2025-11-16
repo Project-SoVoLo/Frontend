@@ -52,7 +52,7 @@ function Signup() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/register",
+        "http:/54.180.142.67:8080/api/users/register",
         {
           userEmail: formData.email,
           password: formData.password,
